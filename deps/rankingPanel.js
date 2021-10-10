@@ -114,7 +114,7 @@ async function setupRankingPanel() {
             rankedStatus.style.backgroundImage = `url('./static/state/qualified.png')`;
             break;
         default:
-            rankedStatus.style.backgroundImage = `url('./static/state/unranked.png)`;
+            rankedStatus.style.backgroundImage = `url('./static/state/unranked.png')`;
             break;
     }
 
