@@ -1,0 +1,416 @@
+#rankingPanel {
+	position: absolute;
+	width: 1920px;
+	height: 1080px;
+	top: 0;
+	left: 0;
+	font-family: Torus;
+	font-weight: 900;
+	color: white;
+    transition: ease-in-out 500ms;
+}
+
+#mapContainer {
+	position: absolute;
+	width: 1500px;
+	height: 100px;
+	top: 50px;
+	left: 0;
+	right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #15151e;
+	box-shadow: 0 10px 8px 0 #15151e;
+	border-radius: 20px;
+    transition: ease-in-out 500ms;
+}
+
+#rankedStatus {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 30px;
+	margin-top: auto;
+	margin-bottom: auto;
+	width: 40px;
+	height: 40px;
+	border-radius: 10px;
+	/* background-color: #494966; */
+	background-size: 100%;
+	background-position: 50% 50%;
+}
+
+#mapData {
+	position: absolute;
+	display: flex;
+	flex-wrap: wrap;
+	align-content: center;
+	left: 90px;
+	width: 900px;
+	height: 100%;
+	/* background-color: #494966; */
+}
+
+#mapArtistTitle {
+	width: 100%;
+	font-size: 28px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#mapDifficulty {
+	width: 100%;
+	font-size: 24px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#mapCreator {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 25px;
+	margin-top: auto;
+	margin-bottom: auto;
+	max-width: 310px;
+	height: 50px;
+	padding: 0 50px 0 50px;
+	background-color: #de3950;
+	box-shadow: 0 10px 8px 0 #de3950;
+	line-height: 50px;
+	border-radius: 20px;
+	font-size: 24px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#statSection {
+	position: absolute;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+	align-content: center;
+	top: 170px;
+	left: 0;
+	right: 0;
+	width: 1500px;
+	margin-left: auto;
+	margin-right: auto;
+    transition: ease-in-out 500ms;
+}
+
+#mapStatistic {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+	align-content: center;
+	width: 1500px;
+	height: 40px;
+	/* background-color: #15151e; */
+}
+
+.stat {
+	width: 100px;
+	text-align: center;
+	font-size: 24px;
+}
+
+#statBar {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+	align-content: center;
+	width: 1500px;
+	height: 10px;
+}
+
+.bar {
+	width: 50px;
+	height: 5px;
+	margin-left: 25px;
+	margin-right: 25px;
+	border-radius: 25px;
+}
+
+#player {
+	position: absolute;
+	top: 250px;
+	left: 210px;
+	width: 400px;
+	height: 700px;
+	background-color: #15151e;
+	box-shadow: 0 10px 8px 0 #15151e;
+	border-radius: 20px;
+    transition: ease-in-out 500ms;
+}
+
+#player::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	width: 300px;
+	height: 5px;
+	background-color: #de3950;
+	box-shadow: 0 0 10px 2px #de3950;
+	border-radius: 10px;
+}
+
+#playerAva {
+	position: absolute;
+	top: 30px;
+	left: 30px;
+	width: 100px;
+	height: 100px;
+	background-color: #494966;
+	box-shadow: 0 10px 20px 0 #000000;
+	border-radius: 20px;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
+#playerCountry {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: -14px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 38px;
+	height: 28px;
+	background-color: #494966;
+	box-shadow: 0 10px 20px 0 #000000;
+	border-radius: 7px;
+    background-size: 100%;
+    background-position: 50% 50%;
+}
+
+#playerStat {
+	position: absolute;
+	display: flex;
+	flex-wrap: wrap;
+	align-content: center;
+	top: 30px;
+	right: 30px;
+	width: 220px;
+	height: 100px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	/* background-color: #494966; */
+}
+
+#playerName .smallStat {
+	width: 100%;
+}
+
+#playerName {
+	font-size: 30px;
+}
+
+.smallStat {
+	font-size: 18px;
+}
+
+#playerTopPlay {
+	position: absolute;
+	top: 170px;
+	width: 100%;
+	height: auto;
+	font-size: 18px;
+	text-align: center;
+}
+
+#playerTopPlay::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: -15px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 200px;
+	height: 5px;
+	background-color: #f9d382;
+	box-shadow: 0 0 10px 2px #f9d382;
+	border-radius: 10px;
+}
+
+#topPlaySection {
+	position: absolute;
+	display: flex;
+	flex-wrap: wrap;
+	align-content: space-around;
+	bottom: 0;
+	width: 100%;
+	height: 480px;
+	/* background-color: #494966; */
+	border-radius: 7px;
+}
+
+.topPlay {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-content: center;
+	width: 100%;
+	height: 70px;
+	/* background-color: #de3950; */
+	border-radius: 10px;
+}
+
+.mapThumb {
+	width: 80px;
+	height: 45px;
+	margin: 15px;
+	background-color: white;
+	border-radius: 10px;
+    background-size: 210%;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
+.topStat {
+	display: flex;
+	flex-wrap: wrap;
+	align-content: center;
+	width: 200px;
+	height: 100%;
+	line-height: 100%;
+}
+
+.topArtistTitle, .topDiff {
+	width: 100%;
+	height: 20px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.topPP {
+    width: 90px;
+    height: 70px;
+    line-height: 70px;
+    text-align: center;
+    font-size: 24px;
+}
+
+#rankingResult {
+    position: absolute;
+    top: 250px;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 700px;
+    height: 700px;
+    /* background-image: url('../static/rankings/SH.png'); */
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    transition: ease-in-out 500ms;
+}
+
+#result {
+    position: absolute;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    top: 250px;
+    right: 210px;
+    width: 400px;
+    height: 700px;
+    transition: ease-in-out 500ms;
+}
+
+#calcResult {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    width: 100%;
+    height: 100px;
+    background-color: #15151e;
+    border-radius: 20px;
+}
+
+#calcResult::after {
+    content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	width: 300px;
+	height: 5px;
+	background-color: #de3950;
+	box-shadow: 0 0 10px 2px #de3950;
+	border-radius: 10px;
+}
+
+#scoreResult {
+    width: 100%;
+    text-align: center;
+    font-size: 32px;
+}
+
+#otherResult {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+#accInfoResult {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-content: center;
+    width: 100%;
+    height: 30px;
+}
+
+.rR {
+    width: 50px;
+    text-align: center;
+}
+
+#accInfoBar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-content: center;
+    width: 100%;
+    height: 5px;
+}
+
+.accbar {
+    margin-left: 22.5px;
+    margin-right: 22.5px;
+    width: 10px;
+    height: 5px;
+    border-radius: 5px;;
+}
+
+#ppResult {
+    width: 100%;
+    height: 100px;
+    line-height: 100px;
+    font-size: 48px;
+    text-align: center;
+}
+
+#endBar {
+    margin-left: auto;
+    margin-right: auto;
+    width: 300px;
+    height: 5px;
+    background-color: #de5039;
+    box-shadow: 0 0 10px 2px #de5039;
+}
