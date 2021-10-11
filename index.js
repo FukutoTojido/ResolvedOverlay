@@ -253,11 +253,11 @@ socket.onmessage = event => {
             document.getElementById("leaderboardx").style.opacity = 1;
             break;
         case "0":
-            document.getElementById("leaderboardx").style.opacity = 0;
+            document.getElementById("leaderboardx").style.opacity = 0;  
             break;
     }
 
-    if (tempUsername !== data.gameplay.name) {
+    if (data.gameplay.name && tempUsername !== data.gameplay.name) {
         tempUsername = data.gameplay.name;
         username.innerHTML = tempUsername;
         setupUser(tempUsername);
