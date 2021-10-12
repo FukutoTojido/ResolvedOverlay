@@ -259,7 +259,7 @@ socket.onmessage = event => {
             document.getElementById("leaderboardx").style.opacity = 1;
             break;
         case "0":
-            document.getElementById("leaderboardx").style.opacity = 0;  
+            document.getElementById("leaderboardx").style.opacity = 0;
             break;
     }
 
@@ -331,7 +331,7 @@ socket.onmessage = event => {
         tempOD = data.menu.bm.stats.OD;
         tempHPDr = data.menu.bm.stats.HP;
         tempSR = data.menu.bm.stats.fullSR;
-        
+
         tempFirstObj = data.menu.bm.time.firstObj;
 
         mapName.innerHTML = tempMapArtist + ' - ' + tempMapTitle;
@@ -503,14 +503,12 @@ socket.onmessage = event => {
         tempTimeFull = data.menu.bm.time.mp3;
         interfaceID = data.settings.showInterface;
 
-        if (tempTimeCurrent >= tempFirstObj + 5000 && tempTimeCurrent <= tempFirstObj + 11900 && gameState == 2)
-        {
+        if (tempTimeCurrent >= tempFirstObj + 5000 && tempTimeCurrent <= tempFirstObj + 11900 && gameState == 2) {
             recorder.style.transform = "translateX(600px)";
             if (tempTimeCurrent >= tempFirstObj + 5500)
                 recorderName.style.transform = "translateX(600px)";
         }
-        else
-        {
+        else {
             recorder.style.transform = 'none';
             recorderName.style.transform = 'none';
         }
@@ -577,12 +575,11 @@ socket.onmessage = event => {
                 }
 
                 ourplayerContainer.innerHTML = `
-                <span style="display: inline-block; width: 190px;">${data.gameplay.leaderboard.ourplayer.name}</span>
+                <div id="ourplayerName" style="width: 200px;">${data.gameplay.leaderboard.ourplayer.name}</div>
                 ${grader(data.gameplay.hits["300"], data.gameplay.hits["100"], data.gameplay.hits["50"], data.gameplay.hits["0"], data.gameplay.leaderboard.ourplayer.mods.search("HD"))}
-                <br/>
-                <span style="display: inline-block; font-size: 15px; font-family: GothicRD; width: 100px;">${new Intl.NumberFormat().format(Number(data.gameplay.score))}</span>
-                <span style="display: inline-block; font-size: 15px; font-family: GothicRD; width: 50px;">${data.gameplay.combo.max}x</span>
-                <span style="display: inline-block; font-size: 15px; font-family: GothicRD; width: 60px;">${data.gameplay.accuracy.toFixed(2)}%</span>
+                <div id="ourplayerName" style="font-size: 15px; font-family: Torus; width: 100px;">${new Intl.NumberFormat().format(Number(data.gameplay.score))}</div>
+                <div id="ourplayerName" style="font-size: 15px; font-family: Torus; width: 50px;">${data.gameplay.combo.max}x</div>
+                <div id="ourplayerName" style="font-size: 15px; font-family: Torus; width: 60px;">${data.gameplay.accuracy.toFixed(2)}%</div>
                 ${$('#' + minimodsContainerOP.id).prop("outerHTML")}`;
 
                 if (!leaderboardSet && leaderboardEnable === "1") {
@@ -593,13 +590,70 @@ socket.onmessage = event => {
                         playerContainer.id = `slot${i}`;
                         playerContainer.setAttribute("class", "playerContainer");
                         playerContainer.style.top = `${(i - 1) * 75}px`;
-                        playerContainer.innerHTML = `
-                        <span style="display: inline-block; width: 190px;">${data.gameplay.leaderboard.slots[i - 1].name}</span>
-                        ${grader(data.gameplay.leaderboard.slots[i - 1].h300, data.gameplay.leaderboard.slots[i - 1].h100, data.gameplay.leaderboard.slots[i - 1].h50, data.gameplay.leaderboard.slots[i - 1].h0, data.gameplay.leaderboard.slots[i - 1].mods.search("HD"))}
-                        <br/>
-                        <span style="display: inline-block; font-size: 15px; font-family: GothicRD; width: 100px;">${new Intl.NumberFormat().format(Number(data.gameplay.leaderboard.slots[i - 1].score))}</span>
-                        <span style="display: inline-block; font-size: 15px; font-family: GothicRD; width: 50px;">${data.gameplay.leaderboard.slots[i - 1].maxCombo}x</span>
-                        <span style="display: inline-block; font-size: 15px; font-family: GothicRD; width: 60px;">${accuracyCalc(data.gameplay.leaderboard.slots[i - 1].h300, data.gameplay.leaderboard.slots[i - 1].h100, data.gameplay.leaderboard.slots[i - 1].h50, data.gameplay.leaderboard.slots[i - 1].h0)}%</span>`;
+                        // playerContainer.innerHTML = `
+                        // <span style="width: 190px;">${data.gameplay.leaderboard.slots[i - 1].name}</span>
+                        // ${grader(data.gameplay.leaderboard.slots[i - 1].h300, data.gameplay.leaderboard.slots[i - 1].h100, data.gameplay.leaderboard.slots[i - 1].h50, data.gameplay.leaderboard.slots[i - 1].h0, data.gameplay.leaderboard.slots[i - 1].mods.search("HD"))}
+                        // <br/>
+                        // <span style="display: inline-block; font-size: 15px; font-family: GothicRD; width: 100px;">${new Intl.NumberFormat().format(Number(data.gameplay.leaderboard.slots[i - 1].score))}</span>
+                        // <span style="display: inline-block; font-size: 15px; font-family: GothicRD; width: 50px;">${data.gameplay.leaderboard.slots[i - 1].maxCombo}x</span>
+                        // <span style="display: inline-block; font-size: 15px; font-family: GothicRD; width: 60px;">${accuracyCalc(data.gameplay.leaderboard.slots[i - 1].h300, data.gameplay.leaderboard.slots[i - 1].h100, data.gameplay.leaderboard.slots[i - 1].h50, data.gameplay.leaderboard.slots[i - 1].h0)}%</span>`;
+
+                        let playerNameLB = document.createElement("div");
+                        playerNameLB.innerHTML = `<div id="lb_name${i}" style="width: 200px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${data.gameplay.leaderboard.slots[i - 1].name}</div>`;
+
+                        let playerScoreLB = document.createElement("div");
+                        playerScoreLB.innerHTML = `<div id="lb_score${i}" style="font-size: 15px; font-family: Torus; width: 100px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${new Intl.NumberFormat().format(Number(data.gameplay.leaderboard.slots[i - 1].score))}</div>`
+
+                        let playerComboLB = document.createElement("div");
+                        playerComboLB.innerHTML = `<div id="lb_combo${i}" style="font-size: 15px; font-family: Torus; width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${data.gameplay.leaderboard.slots[i - 1].maxCombo}x</div>`
+
+                        let playerAccLB = document.createElement("div");
+                        let raw_playerAcc = accuracyCalc(data.gameplay.leaderboard.slots[i - 1].h300, data.gameplay.leaderboard.slots[i - 1].h100, data.gameplay.leaderboard.slots[i - 1].h50, data.gameplay.leaderboard.slots[i - 1].h0);
+                        playerAccLB.innerHTML = `<div id="lb_acc${i}" style="font-size: 15px; font-family: Torus; width: 60px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${raw_playerAcc}%</div>`
+
+                        let playerGradeLB = document.createElement("div");
+                        let lb_hasHD = data.gameplay.leaderboard.slots[i - 1].mods.search("HD");
+                        let lb_h300 = data.gameplay.leaderboard.slots[i - 1].h300;
+                        let lb_h100 = data.gameplay.leaderboard.slots[i - 1].h100;
+                        let lb_h50 = data.gameplay.leaderboard.slots[i - 1].h50;
+                        let lb_h0 = data.gameplay.leaderboard.slots[i - 1].h0;
+                        let lb_combo = lb_h300 + lb_h100 + lb_h50 + lb_h0;
+
+                        switch (true) {
+                            case (raw_playerAcc == 100 || lb_combo === 0):
+                                if (lb_hasHD === -1) {
+                                    playerGradeLB.innerHTML = `<div id="grade${i}" style="width: 50px; color: #de3950; filter: drop-shadow(0 0 5px #de3950)">X</div>`;
+                                    break;
+                                }
+                                playerGradeLB.innerHTML = `<div id=grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">X</div>`;
+                                break;
+                            case (raw_playerAcc > 90 && lb_h50 / lb_combo < 0.01 && lb_h0 === 0):
+                                if (lb_hasHD === -1) {
+                                    playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #f2d646; filter: drop-shadow(0 0 5px #f2d646)">S</div>`;
+                                    break;
+                                }
+                                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">S</div>`;
+                                break;
+                            case ((raw_playerAcc > 80 && raw_playerAcc <= 90 && lb_h0 === 0) || (lb_h300 / lb_combo > 0.9)):
+                                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #46f26e; filter: drop-shadow(0 0 5px #46f26e)">A</div>`;
+                                break;
+                            case ((raw_playerAcc > 70 && raw_playerAcc <= 80 && lb_h0 === 0) || (lb_h300 / lb_combo > 0.8)):
+                                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #469cf2; filter: drop-shadow(0 0 5px #469cf2)">B</div>`;
+                                break;
+                            case ((lb_h300 / lb_combo > 0.6) && (lb_h300 / lb_combo <= 0.8)):
+                                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #9f46f2; filter: drop-shadow(0 0 5px #9f46f2)">C</div>`;
+                                break;
+                            case ((lb_h300 / lb_combo <= 0.6)):
+                                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #ff0000; filter: drop-shadow(0 0 5px #ff0000)">D</div>`;
+                                break;
+                        }
+
+                        playerContainer.appendChild(playerNameLB);
+                        playerContainer.appendChild(playerGradeLB);
+                        playerContainer.appendChild(playerScoreLB);
+                        playerContainer.appendChild(playerComboLB);
+                        playerContainer.appendChild(playerAccLB);
+
 
                         let minimodsContainer = document.createElement("div");
                         minimodsContainer.id = `minimodsContainerSlot${i}`;
@@ -887,20 +941,30 @@ grader = (h300, h100, h50, h0, isHD) => {
     let maxCombo = h300 + h100 + h50 + h0;
     switch (true) {
         case (acc == 100 || maxCombo === 0):
-            if (isHD === -1)
-                return '<span style="color: #de3950; filter: drop-shadow(0 0 5px #de3950)">X</span>';
-            return '<span style="color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">X</span>';
+            if (isHD === -1) {
+                return `<div id="gradeOurplayer" style="width: 50px; color: #de3950; filter: drop-shadow(0 0 5px #de3950)">X</div>`;
+                break;
+            }
+            playerGradeLB.innerHTML = `<div id=grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">X</div>`;
+            break;
         case (acc > 90 && h50 / maxCombo < 0.01 && h0 === 0):
-            if (isHD === -1)
-                return '<span style="color: #f2d646; filter: drop-shadow(0 0 5px #f2d646)">S</span>';
-            return '<span style="color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">S</span>';
+            if (isHD === -1) {
+                return `<div id="gradeOurplayer"  style="width: 50px; color: #f2d646; filter: drop-shadow(0 0 5px #f2d646)">S</div>`;
+                break;
+            }
+            return `<div id="gradeOurplayer"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">S</div>`;
+            break;
         case ((acc > 80 && acc <= 90 && h0 === 0) || (h300 / maxCombo > 0.9)):
-            return '<span style="color: #46f26e; filter: drop-shadow(0 0 5px #46f26e)">A</span>';
+            return `<div id="gradeOurplayer"  style="width: 50px; color: #46f26e; filter: drop-shadow(0 0 5px #46f26e)">A</div>`;
+            break;
         case ((acc > 70 && acc <= 80 && h0 === 0) || (h300 / maxCombo > 0.8)):
-            return '<span style="color: #469cf2; filter: drop-shadow(0 0 5px #469cf2)">B</span>';
+            return `<div id="gradeOurplayer"  style="width: 50px; color: #469cf2; filter: drop-shadow(0 0 5px #469cf2)">B</div>`;
+            break;
         case ((h300 / maxCombo > 0.6) && (h300 / maxCombo <= 0.8)):
-            return '<span style="color: #9f46f2; filter: drop-shadow(0 0 5px #9f46f2)">C</span>';
+            return `<div id="gradeOurplayer"  style="width: 50px; color: #9f46f2; filter: drop-shadow(0 0 5px #9f46f2)">C</div>`;
+            break;
         case ((h300 / maxCombo <= 0.6)):
-            return '<span style="color: #ff0000; filter: drop-shadow(0 0 5px #ff0000)">D</span>';
+            return `<div id="gradeOurplayer"  style="width: 50px; color: #ff0000; filter: drop-shadow(0 0 5px #ff0000)">D</div>`;
+            break;
     }
 }

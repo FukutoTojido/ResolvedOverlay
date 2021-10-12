@@ -33,6 +33,13 @@
 	font-weight: 900;
 	line-height: 25px;
 	font-family: Torus;
+
+	display: flex;
+	justify-content: space-between;
+	align-content: space-between;
+	flex-wrap: wrap;
+
+	filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0));
 }
 
 .playerContainer::after {
@@ -65,6 +72,11 @@
 	font-weight: 900;
 	line-height: 25px;
 	font-family: Torus;
+
+	display: flex;
+	justify-content: space-between;
+	align-content: space-between;
+	flex-wrap: wrap;
 }
 
 .ourplayerContainer::after {
