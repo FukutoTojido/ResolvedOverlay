@@ -304,3 +304,38 @@
 #ppBar {
     right: var(--bottom-bar-distance);
 }
+
+#recorderContainer {
+	position: absolute;
+	left: -600px;
+	bottom: 5px;
+	display: flex;
+	flex-wrap: wrap;
+	align-content: center;
+	width: 500px;
+	height: 100px;
+	margin: 20px;
+	text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+}
+
+#recorder {
+	width: 100%;
+	height: 50px;
+	color: white;
+	font-size: 40px;
+	line-height: 50px;
+	font-family: Torus;
+	font-weight: 900;
+	transition: ease-in-out 500ms;
+}
+
+#recorderName {
+	width: 100%;
+	height: 50px;
+	color: white;
+	font-size: 48px;
+	line-height: 50px;
+	font-family: Torus;
+	font-weight: 900;
+	transition: ease-in-out 500ms;
+}

@@ -9,6 +9,8 @@ async function getAPI() {
         api = file[0].api;
         leaderboardEnable = file[1].leaderboardEnable;
         leaderboardTab = file[1].leaderboardTab;
+        document.getElementById("recorderName").innerHTML = file[2].recorder;
+        document.getElementById("resultRecorder").innerHTML = `Recorder: ${file[2].recorder}`;
     } catch (error) {
         console.error("Could not read JSON file", error);
     }
@@ -20,6 +22,9 @@ let socket = new ReconnectingWebSocket("ws://127.0.0.1:24050/ws");
 let mapid = document.getElementById('mapid');
 let mapBG = document.getElementById("mapBG");
 let rankingPanelBG = document.getElementById("rankingPanelBG");
+let recorder = document.getElementById("recorder");
+let recorderName = document.getElementById("recorderName");
+let resultRecorder = document.getElementById("resultRecorder");
 
 // NOW PLAYING
 let mapContainer = document.getElementById("nowPlayingContainer");
@@ -203,6 +208,7 @@ let apiGetSet = false;
 
 let tempTimeCurrent;
 let tempTimeFull;
+let tempFirstObj;
 
 let tempStrainBase;
 let smoothOffset = 2;
@@ -325,6 +331,8 @@ socket.onmessage = event => {
         tempOD = data.menu.bm.stats.OD;
         tempHPDr = data.menu.bm.stats.HP;
         tempSR = data.menu.bm.stats.fullSR;
+        
+        tempFirstObj = data.menu.bm.time.firstObj;
 
         mapName.innerHTML = tempMapArtist + ' - ' + tempMapTitle;
 
@@ -494,6 +502,18 @@ socket.onmessage = event => {
         tempTimeCurrent = data.menu.bm.time.current;
         tempTimeFull = data.menu.bm.time.mp3;
         interfaceID = data.settings.showInterface;
+
+        if (tempTimeCurrent >= tempFirstObj + 5000 && tempTimeCurrent <= tempFirstObj + 11900 && gameState == 2)
+        {
+            recorder.style.transform = "translateX(600px)";
+            if (tempTimeCurrent >= tempFirstObj + 5500)
+                recorderName.style.transform = "translateX(600px)";
+        }
+        else
+        {
+            recorder.style.transform = 'none';
+            recorderName.style.transform = 'none';
+        }
 
         if (tempTimeCurrent >= tempTimeFull - 10000 && gameState === 2 && !apiGetSet)
             fetchData();

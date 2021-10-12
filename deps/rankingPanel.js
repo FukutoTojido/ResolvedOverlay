@@ -114,7 +114,7 @@ async function setupRankingPanel() {
             rankedStatus.style.backgroundImage = `url('./static/state/qualified.png')`;
             break;
         default:
-            rankedStatus.style.backgroundImage = `url('./static/state/unranked.png')`;
+            rankedStatus.style.backgroundImage = `url('./static/state/unranked.png'~)`;
             break;
     }
 
@@ -129,12 +129,14 @@ async function setupRankingPanel() {
     r0.innerHTML = temp0;
     ppResult.innerHTML = tempPP + 'pp';
 
+    resultRecorder.style.transform = 'none';
 }
 
 async function deRankingPanel() {
     rankingPanelSet = false;
     apiGetSet = false;
     rankingPanel.style.opacity = 0;
+    resultRecorder.style.transform = 'translateY(100px)';
 
     mapContainerR.style.transform = "translateY(-200px)";
     statSection.style.transform = "translateY(-300px)";

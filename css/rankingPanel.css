@@ -414,3 +414,50 @@
     background-color: #de5039;
     box-shadow: 0 0 10px 2px #de5039;
 }
+
+#qcsContainer {
+	display: flex;
+	flex-wrap: wrap;
+	align-content: space-between;
+	width: 100%;
+	height: 440px;
+	margin-top: 20px;
+	/* background-color: #de3950; */
+}
+
+.qcContainer {
+	width: 100%;
+	height: 120px;
+	/* background-color: white; */
+	border-radius: 20px;
+    /* box-shadow: 0 10px 20px -5px #000; */
+	background-size: 100%;
+	background-position: 50% 50%;
+}
+
+#qc1{
+	background-image: url('../static/quangCao/qc1.png');
+}
+#qc2{
+	background-image: url('../static/quangCao/qc2.png');
+}
+#qc3{
+	background-image: url('../static/quangCao/qc3.png');
+}
+
+#resultRecorder {
+	position: absolute;
+	bottom: 50px;
+	left: 0;
+	right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	font-size: 48px;
+	font-family: Torus;
+	font-weight: 900;
+	height: 50px;
+	line-height: 50px;
+	color: white;
+	text-align: center;
+	transition: ease-in-out 500ms;
+}
