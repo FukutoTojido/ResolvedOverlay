@@ -853,14 +853,14 @@ async function setupUser(name) {
         tickRight.style.boxShadow = `0 0 10px 3px hsl(${avatarColor[1]})`;
 
         document.getElementById("comboBar").style.backgroundColor = `hsl(${avatarColor[0]})`;
-        document.getElementById("comboBar").style.boxShadow = `0 0 10px 3px hsl(${avatarColor[0]})`;
+        // document.getElementById("comboBar").style.filter = `drop-shadow(0 0 10px hsl(${avatarColor[0]}))`;
         document.getElementById("ppBar").style.backgroundColor = `hsl(${avatarColor[1]})`;
-        document.getElementById("ppBar").style.boxShadow = `0 0 10px 3px hsl(${avatarColor[1]})`;
+        // document.getElementById("ppBar").style.boxShadow = `0 0 10px 3px hsl(${avatarColor[1]})`;
 
-        combo.style.borderColor = `hsl(${avatarColor[0]})`;
-        combo.style.boxShadow = `0 0 10px 3px hsl(${avatarColor[0]})`;
-        pp.style.borderColor = `hsl(${avatarColor[1]})`;
-        pp.style.boxShadow = `0 0 10px 3px hsl(${avatarColor[1]})`;
+        // combo.style.borderColor = `hsl(${avatarColor[0]})`;
+        // combo.style.boxShadow = `0 0 10px 3px hsl(${avatarColor[0]})`;
+        // pp.style.borderColor = `hsl(${avatarColor[1]})`;
+        // pp.style.boxShadow = `0 0 10px 3px hsl(${avatarColor[1]})`;
     }
 }
 
@@ -945,7 +945,7 @@ grader = (h300, h100, h50, h0, isHD) => {
                 return `<div id="gradeOurplayer" style="width: 50px; color: #de3950; filter: drop-shadow(0 0 5px #de3950)">X</div>`;
                 break;
             }
-            playerGradeLB.innerHTML = `<div id=grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">X</div>`;
+            return `<div id="gradeOurplayer"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">X</div>`;
             break;
         case (acc > 90 && h50 / maxCombo < 0.01 && h0 === 0):
             if (isHD === -1) {

@@ -1,5 +1,5 @@
 :root {
-    --bottom-bar-distance: 400px;
+    --bottom-bar-distance: 430px;
 }
 
 #bottom {
@@ -127,11 +127,11 @@
     position: absolute;
 	padding: 10px 0px 10px 0px;
 	text-align: center;
-	border-radius: 30px;
+	/* border-radius: 30px;
     border-style: solid;
     border-width: 8px;
-    border-color: #15151e;
-	bottom: 10px;
+    border-color: #15151e; */
+	bottom: 20px;
 	width: 150px;
 	color: white;
 	font-size: 25px;
@@ -141,18 +141,18 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
-	left: 625px;
+	left: 580px;
 }
 
 #pp {
     position: absolute;
 	padding: 10px 0px 10px 0px;
 	text-align: center;
-	border-radius: 30px;
+	/* border-radius: 30px;
     border-style: solid;
     border-width: 8px;
-    border-color: #15151e;
-	bottom: 10px;
+    border-color: #15151e; */
+	bottom: 20px;
 	width: 150px;
 	color: white;
 	font-size: 25px;
@@ -162,7 +162,7 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
-	right: 625px;
+	right: 580px;
 }
 
 #accInfo {
@@ -290,19 +290,29 @@
 
 .bottomBar {
     position: absolute;
-    bottom: 40px;
-    width: 220px;
-    padding: 5px;
+    bottom: 0px;
+    width: 400px;
+	height: 67px;
     border-radius: 10px;
     background-color: #15151e;
+	mask-size: 100%;
+	mask-repeat: no-repeat;
+	mask-position: center;
+	-webkit-mask-size: 100%;
+	-webkit-mask-repeat: no-repeat;
+	-webkit-mask-position: center;
 }
 
 #comboBar {
     left: var(--bottom-bar-distance);
+	mask-image: url('../static/bottombar1.png');
+	-webkit-mask-image: url('../static/bottombar1.png');
 }
 
 #ppBar {
     right: var(--bottom-bar-distance);
+	mask-image: url('../static/bottombar2.png');
+	-webkit-mask-image: url('../static/bottombar2.png');
 }
 
 #recorderContainer {
