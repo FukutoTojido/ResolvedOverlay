@@ -7,7 +7,7 @@
 	font-family: Torus;
 	font-weight: 900;
 	color: white;
-    transition: ease-in-out 500ms;
+	transition: ease-in-out 500ms;
 }
 
 #mapContainer {
@@ -22,7 +22,7 @@
 	background-color: #15151e;
 	box-shadow: 0 10px 8px 0 #15151e;
 	border-radius: 20px;
-    transition: ease-in-out 500ms;
+	transition: ease-in-out 500ms;
 }
 
 #rankedStatus {
@@ -99,7 +99,7 @@
 	width: 1500px;
 	margin-left: auto;
 	margin-right: auto;
-    transition: ease-in-out 500ms;
+	transition: ease-in-out 500ms;
 }
 
 #mapStatistic {
@@ -144,7 +144,7 @@
 	background-color: #15151e;
 	box-shadow: 0 10px 8px 0 #15151e;
 	border-radius: 20px;
-    transition: ease-in-out 500ms;
+	transition: ease-in-out 500ms;
 }
 
 #player::after {
@@ -171,9 +171,9 @@
 	background-color: #494966;
 	box-shadow: 0 10px 20px 0 #000000;
 	border-radius: 20px;
-    background-size: 100%;
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
 }
 
 #playerCountry {
@@ -188,8 +188,8 @@
 	background-color: #494966;
 	box-shadow: 0 10px 20px 0 #000000;
 	border-radius: 7px;
-    background-size: 100%;
-    background-position: 50% 50%;
+	background-size: 100%;
+	background-position: 50% 50%;
 }
 
 #playerStat {
@@ -271,9 +271,9 @@
 	margin: 15px;
 	background-color: white;
 	border-radius: 10px;
-    background-size: 210%;
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
+	background-size: 210%;
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
 }
 
 .topStat {
@@ -285,62 +285,63 @@
 	line-height: 100%;
 }
 
-.topArtistTitle, .topDiff {
+.topArtistTitle,
+.topDiff {
 	width: 100%;
 	height: 20px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 	overflow: hidden;
 }
 
 .topPP {
-    width: 90px;
-    height: 70px;
-    line-height: 70px;
-    text-align: center;
-    font-size: 24px;
+	width: 90px;
+	height: 70px;
+	line-height: 70px;
+	text-align: center;
+	font-size: 24px;
 }
 
 #rankingResult {
-    position: absolute;
-    top: 250px;
-    left: 0;
-    right: 0;
-    margin-left: auto;
-    margin-right: auto;
-    width: 700px;
-    height: 700px;
-    /* background-image: url('../static/rankings/SH.png'); */
-    background-size: 80%;
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    transition: ease-in-out 500ms;
+	position: absolute;
+	top: 250px;
+	left: 0;
+	right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	width: 700px;
+	height: 700px;
+	/* background-image: url('../static/rankings/SH.png'); */
+	background-size: 80%;
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	transition: ease-in-out 500ms;
 }
 
 #result {
-    position: absolute;
-    display: flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    top: 250px;
-    right: 210px;
-    width: 400px;
-    height: 700px;
-    transition: ease-in-out 500ms;
+	position: absolute;
+	display: flex;
+	flex-wrap: wrap;
+	align-content: flex-start;
+	top: 250px;
+	right: 210px;
+	width: 400px;
+	height: 700px;
+	transition: ease-in-out 500ms;
 }
 
 #calcResult {
-    display: flex;
-    flex-wrap: wrap;
-    align-content: center;
-    width: 100%;
-    height: 100px;
-    background-color: #15151e;
-    border-radius: 20px;
+	display: flex;
+	flex-wrap: wrap;
+	align-content: center;
+	width: 100%;
+	height: 100px;
+	background-color: #15151e;
+	border-radius: 20px;
 }
 
 #calcResult::after {
-    content: "";
+	content: "";
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -355,64 +356,64 @@
 }
 
 #scoreResult {
-    width: 100%;
-    text-align: center;
-    font-size: 32px;
+	width: 100%;
+	text-align: center;
+	font-size: 32px;
 }
 
 #otherResult {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+	width: 100%;
 }
 
 #accInfoResult {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    align-content: center;
-    width: 100%;
-    height: 30px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+	align-content: center;
+	width: 100%;
+	height: 30px;
 }
 
 .rR {
-    width: 50px;
-    text-align: center;
+	width: 50px;
+	text-align: center;
 }
 
 #accInfoBar {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    align-content: center;
-    width: 100%;
-    height: 5px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+	align-content: center;
+	width: 100%;
+	height: 5px;
 }
 
 .accbar {
-    margin-left: 22.5px;
-    margin-right: 22.5px;
-    width: 10px;
-    height: 5px;
-    border-radius: 5px;;
+	margin-left: 22.5px;
+	margin-right: 22.5px;
+	width: 10px;
+	height: 5px;
+	border-radius: 5px;
 }
 
 #ppResult {
-    width: 100%;
-    height: 100px;
-    line-height: 100px;
-    font-size: 48px;
-    text-align: center;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	font-size: 48px;
+	text-align: center;
 }
 
 #endBar {
-    margin-left: auto;
-    margin-right: auto;
-    width: 300px;
-    height: 5px;
-    background-color: #de5039;
-    box-shadow: 0 0 10px 2px #de5039;
+	margin-left: auto;
+	margin-right: auto;
+	width: 300px;
+	height: 5px;
+	background-color: #de5039;
+	box-shadow: 0 0 10px 2px #de5039;
 }
 
 #qcsContainer {
@@ -430,22 +431,22 @@
 	height: 120px;
 	/* background-color: white; */
 	border-radius: 20px;
-    /* box-shadow: 0 10px 20px -5px #000; */
+	/* box-shadow: 0 10px 20px -5px #000; */
 	background-size: 100%;
 	background-position: 50% 50%;
 }
 
-#qc1{
-	background-image: url('../static/quangCao/qc1.png');
+#qc1 {
+	background-image: url("../static/quangCao/qc1.png");
 }
-#qc2{
-	background-image: url('../static/quangCao/qc2.png');
+#qc2 {
+	background-image: url("../static/quangCao/qc2.png");
 }
-#qc3{
-	background-image: url('../static/quangCao/qc3.png');
+#qc3 {
+	background-image: url("../static/quangCao/qc3.png");
 }
 
-#resultRecorder {
+#recorderInfo {
 	position: absolute;
 	bottom: 50px;
 	left: 0;

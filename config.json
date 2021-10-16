@@ -1,8 +1,5 @@
-[
-	{ "api": "" },
-	{
-		"leaderboardEnable": "1",
-		"leaderboardTab": "0"
-	},
-	{ "recorder": "" }
-]
+{
+	"apiKey": "your_api_key_goes_here",
+	"enableLeaderboard": true,
+	"recorderName": "YaeMikoIsLove"
+}

@@ -1,5 +1,5 @@
 :root {
-    --bottom-bar-distance: 430px;
+	--bottom-bar-distance: 430px;
 }
 
 #bottom {
@@ -98,7 +98,7 @@
 
 #strainGraph {
 	position: absolute;
-    right: 470px;
+	right: 470px;
 	bottom: 170px;
 	height: 70px;
 	transition: ease 500ms;
@@ -124,7 +124,7 @@
 }
 
 #combo {
-    position: absolute;
+	position: absolute;
 	padding: 10px 0px 10px 0px;
 	text-align: center;
 	/* border-radius: 30px;
@@ -145,7 +145,7 @@
 }
 
 #pp {
-    position: absolute;
+	position: absolute;
 	padding: 10px 0px 10px 0px;
 	text-align: center;
 	/* border-radius: 30px;
@@ -201,7 +201,7 @@
 	color: #de3950;
 }
 
-#URbar {
+#urBar {
 	position: absolute;
 	left: 810px;
 	bottom: 20px;
@@ -250,13 +250,13 @@
 	top: 15px;
 	height: 10px;
 	width: 4px;
-	background-color: rgba(255 255 255 / .6);
+	background-color: rgba(255 255 255 / 0.6);
 	left: 147.5px;
 	border-radius: 3px;
 	transition: ease-out 500ms;
 }
 
-#URIndex {
+#urIndex {
 	position: absolute;
 	bottom: 50px;
 	margin-left: auto;
@@ -276,7 +276,7 @@
 	transition: ease-in-out 500ms;
 }
 
-#modContainer {
+#modsContainer {
 	position: absolute;
 	display: flex;
 	justify-content: flex-end;
@@ -289,12 +289,12 @@
 }
 
 .bottomBar {
-    position: absolute;
-    bottom: 0px;
-    width: 400px;
+	position: absolute;
+	bottom: 0px;
+	width: 400px;
 	height: 67px;
-    border-radius: 10px;
-    background-color: #15151e;
+	border-radius: 10px;
+	background-color: #15151e;
 	mask-size: 100%;
 	mask-repeat: no-repeat;
 	mask-position: center;
@@ -304,15 +304,15 @@
 }
 
 #comboBar {
-    left: var(--bottom-bar-distance);
-	mask-image: url('../static/bottombar1.png');
-	-webkit-mask-image: url('../static/bottombar1.png');
+	left: var(--bottom-bar-distance);
+	mask-image: url("../static/bottombar1.png");
+	-webkit-mask-image: url("../static/bottombar1.png");
 }
 
 #ppBar {
-    right: var(--bottom-bar-distance);
-	mask-image: url('../static/bottombar2.png');
-	-webkit-mask-image: url('../static/bottombar2.png');
+	right: var(--bottom-bar-distance);
+	mask-image: url("../static/bottombar2.png");
+	-webkit-mask-image: url("../static/bottombar2.png");
 }
 
 #recorderContainer {
@@ -328,7 +328,7 @@
 	text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
 }
 
-#recorder {
+#recorderTitle {
 	width: 100%;
 	height: 50px;
 	color: white;

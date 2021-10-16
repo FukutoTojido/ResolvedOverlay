@@ -20,10 +20,9 @@
 
 	<body>
 		<div id="main">
-			<div id="mapBG"></div>
-			<div id="rankingPanelBG"></div>
+			<div id="rankingPanelBg"></div>
 			<div id="top">
-				<div id="hpBG"></div>
+				<div id="hpBg"></div>
 				<div id="hp"></div>
 				<div id="score" class="statContainer" style="left: 350px"></div>
 				<div id="acc" class="statContainer" style="right: 350px"></div>
@@ -54,16 +53,16 @@
 					<div id="combo" class="odometer combo"></div>
 					<div id="pp" class="odometer pp"></div>
 				</div>
-				<div id="URIndex" class="odometer"><b></b></div>
-				<div id="URbar">
+				<div id="urIndex" class="odometer"><b></b></div>
+				<div id="urBar">
 					<div id="l100"></div>
 					<div id="l300"></div>
 					<div id="avgHitError"></div>
 				</div>
 			</div>
-			<div id="modContainer"></div>
-			<div id="leaderboardx">
-				<div id="leaderboard"></div>
+			<div id="modsContainer"></div>
+			<div id="leaderboard">
+				<div id="leaderboardScores"></div>
 			</div>
 			<div id="strainGraph">
 				<div id="basegraph">
@@ -80,7 +79,7 @@
 				<div id="mapInfo"></div>
 			</div>
 			<div id="recorderContainer">
-				<div id="recorder">Recorder:</div>
+				<div id="recorderTitle">Recorder:</div>
 				<div id="recorderName"></div>
 			</div>
 		</div>
@@ -170,7 +169,7 @@
 					<div id="otherResult">
 						<div id="comboResult"></div>
 						<div id="accResult"></div>
-						<div id="URResult"></div>
+						<div id="urResult"></div>
 					</div>
 				</div>
 				<div id="accInfoResult">
@@ -193,17 +192,11 @@
 					<div id="qc3" class="qcContainer"></div>
 				</div>
 			</div>
-			<div id="resultRecorder"></div>
+			<div id="recorderInfo"></div>
 		</div>
-		<svg width="0" height="0">
-			<defs>
-			  <clipPath id="myClip">
-				<polygon points="1536,972 1920,972 1920,1080 1536,1080"/>
-				<polygon points="750,1030 1170,1030 1170,1080, 750,1080" />
-			  </clipPath>
-			</defs>
-		  </svg>
 		<script src="index.js"></script>
 		<script src="./deps/rankingPanel.js"></script>
+		<script src="./deps/leaderboard.js"></script>
+		<script src="./deps/utils.js"></script>
 	</body>
 </html>
