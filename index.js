@@ -503,12 +503,12 @@ socket.onmessage = event => {
 
 
     if (tempTimeCurrent !== data.menu.bm.time.current) {
-        if (tempTimeCurrent > data.menu.bm.time.current) {
-            leaderboard.innerHTML = '';
-            $("#ourplayer").remove();
-            ourplayerSet = 0;
-            leaderboardSet = 0;
-        }
+        // if (tempTimeCurrent > data.menu.bm.time.current) {
+        //     leaderboard.innerHTML = '';
+        //     $("#ourplayer").remove();
+        //     ourplayerSet = 0;
+        //     leaderboardSet = 0;
+        // }
         tempTimeCurrent = data.menu.bm.time.current;
         tempTimeFull = data.menu.bm.time.full;
         tempTimeMP3 = data.menu.bm.time.mp3;
@@ -713,7 +713,7 @@ socket.onmessage = event => {
                     leaderboard.style.transform = 'translateY(0)';
                     document.getElementById("ourplayer").style.transform = `translateY(-${(6 - tempCurrentPosition) * 75}px)`
                 }
-                for (var i = 1; i < tempSlotLength; i++) {
+                for (var i = 1; i <= tempSlotLength; i++) {
                     if (i >= tempCurrentPosition && tempCurrentPosition !== 0) {
                         document.getElementById(`slot${i}`).style.transform = `translateY(75px)`;
                     }
@@ -904,62 +904,65 @@ async function setupMapScores(beatmapID, name) {
         playerContainer.setAttribute("class", "playerContainer");
         playerContainer.style.top = `${(i - 1) * 75}px`;
 
-        let playerNameLB = document.createElement("div");
-        playerNameLB.innerHTML = `<div id="lb_name${i}" style="width: 200px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${data[i - 1].username}</div>`;
+        let playerNameLB = `<div id="lb_name${i}" style="width: 200px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${data[i - 1].username}</div>`;
 
-        let playerScoreLB = document.createElement("div");
-        playerScoreLB.innerHTML = `<div id="lb_score${i}" style="font-size: 15px; font-family: Torus; width: 100px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${new Intl.NumberFormat().format(Number(data[i - 1].score))}</div>`
+        let playerScoreLB = `<div id="lb_score${i}" style="font-size: 15px; font-family: Torus; width: 100px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${new Intl.NumberFormat().format(Number(data[i - 1].score))}</div>`
 
-        let playerComboLB = document.createElement("div");
-        playerComboLB.innerHTML = `<div id="lb_combo${i}" style="font-size: 15px; font-family: Torus; width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${data[i - 1].maxcombo}x</div>`
+        let playerComboLB = `<div id="lb_combo${i}" style="font-size: 15px; font-family: Torus; width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${data[i - 1].maxcombo}x</div>`
 
-        let playerAccLB = document.createElement("div");
         let raw_playerAcc = accuracyCalc(parseInt(data[i - 1].count300), parseInt(data[i - 1].count100), parseInt(data[i - 1].count50), parseInt(data[i - 1].countmiss));
         // console.log(raw_playerAcc);
-        playerAccLB.innerHTML = `<div id="lb_acc${i}" style="font-size: 15px; font-family: Torus; width: 60px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${raw_playerAcc}%</div>`
+        let playerAccLB = `<div id="lb_acc${i}" style="font-size: 15px; font-family: Torus; width: 60px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${raw_playerAcc}%</div>`
 
-        let playerGradeLB = document.createElement("div");
+        let playerGradeLB;
         let lb_grade = data[i - 1].rank;
 
         switch (lb_grade) {
             case ("XH"):
-                playerGradeLB.innerHTML = `<div id=grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">X</div>`;
+                playerGradeLB = `<div id=grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">X</div>`;
                 break;
             case ("X"):
-                playerGradeLB.innerHTML = `<div id="grade${i}" style="width: 50px; color: #de3950; filter: drop-shadow(0 0 5px #de3950)">X</div>`;
+                playerGradeLB = `<div id="grade${i}" style="width: 50px; color: #de3950; filter: drop-shadow(0 0 5px #de3950)">X</div>`;
                 break;
             case ("S"):
-                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #f2d646; filter: drop-shadow(0 0 5px #f2d646)">S</div>`;
+                playerGradeLB = `<div id="grade${i}"  style="width: 50px; color: #f2d646; filter: drop-shadow(0 0 5px #f2d646)">S</div>`;
                 break;
             case ("SH"):
-                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">S</div>`;
+                playerGradeLB = `<div id="grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">S</div>`;
                 break;
             case ("A"):
-                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #46f26e; filter: drop-shadow(0 0 5px #46f26e)">A</div>`;
+                playerGradeLB = `<div id="grade${i}"  style="width: 50px; color: #46f26e; filter: drop-shadow(0 0 5px #46f26e)">A</div>`;
                 break;
             case ("B"):
-                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #469cf2; filter: drop-shadow(0 0 5px #469cf2)">B</div>`;
+                playerGradeLB = `<div id="grade${i}"  style="width: 50px; color: #469cf2; filter: drop-shadow(0 0 5px #469cf2)">B</div>`;
                 break;
             case ("C"):
-                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #9f46f2; filter: drop-shadow(0 0 5px #9f46f2)">C</div>`;
+                playerGradeLB = `<div id="grade${i}"  style="width: 50px; color: #9f46f2; filter: drop-shadow(0 0 5px #9f46f2)">C</div>`;
                 break;
             case ("D"):
-                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #ff0000; filter: drop-shadow(0 0 5px #ff0000)">D</div>`;
+                playerGradeLB = `<div id="grade${i}"  style="width: 50px; color: #ff0000; filter: drop-shadow(0 0 5px #ff0000)">D</div>`;
                 break;
         }
 
-        playerContainer.appendChild(playerNameLB);
-        playerContainer.appendChild(playerGradeLB);
-        playerContainer.appendChild(playerScoreLB);
-        playerContainer.appendChild(playerComboLB);
-        playerContainer.appendChild(playerAccLB);
+        // playerContainer.appendChild(playerNameLB);
+        // playerContainer.appendChild(playerGradeLB);
+        // playerContainer.appendChild(playerScoreLB);
+        // playerContainer.appendChild(playerComboLB);
+        // playerContainer.appendChild(playerAccLB);
+
+        playerContainer.innerHTML = `${playerNameLB}
+            ${playerGradeLB}
+            ${playerScoreLB}
+            ${playerComboLB}
+            ${playerAccLB}
+        `
 
 
-        let minimodsContainer = document.createElement("div");
-        minimodsContainer.id = `minimodsContainerSlot${i}`;
-        minimodsContainer.setAttribute("class", "minimodsContainer");
-        playerContainer.appendChild(minimodsContainer);
-        leaderboard.appendChild(playerContainer);
+        // let minimodsContainer = document.createElement("div");
+        // minimodsContainer.id = `minimodsContainerSlot${i}`;
+        // minimodsContainer.setAttribute("class", "minimodsContainer");
+        // playerContainer.appendChild(minimodsContainer);
+        document.getElementById("leaderboard").appendChild(playerContainer);
 
         // let tempMinimods = data.gameplay.leaderboard.slots[i - 1].mods;
 
@@ -975,7 +978,6 @@ async function setupMapScores(beatmapID, name) {
         //     k++;
         // }
     }
-    return data;
 }
 
 async function getUserDataSet(name) {
