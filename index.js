@@ -209,6 +209,7 @@ let apiGetSet = false;
 let tempTimeCurrent;
 let tempTimeFull;
 let tempFirstObj;
+let tempTimeMP3;
 
 let tempStrainBase;
 let smoothOffset = 2;
@@ -500,7 +501,8 @@ socket.onmessage = event => {
             leaderboardSet = 0;
         }
         tempTimeCurrent = data.menu.bm.time.current;
-        tempTimeFull = data.menu.bm.time.mp3;
+        tempTimeFull = data.menu.bm.time.full;
+        tempTimeMP3 = data.menu.bm.time.mp3;
         interfaceID = data.settings.showInterface;
 
         if (tempTimeCurrent >= tempFirstObj + 5000 && tempTimeCurrent <= tempFirstObj + 11900 && gameState == 2) {
@@ -516,7 +518,7 @@ socket.onmessage = event => {
         if (tempTimeCurrent >= tempTimeFull - 10000 && gameState === 2 && !apiGetSet)
             fetchData();
 
-        if (tempTimeCurrent >= tempTimeFull - 2000 && gameState === 2)
+        if (tempTimeCurrent >= tempTimeMP3 - 2000 && gameState === 2)
             rankingPanelBG.style.opacity = 1;
 
         if (gameState === 7) {

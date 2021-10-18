@@ -50,7 +50,7 @@ html {
 	font-weight: 900 !important;
 }
 
-#mapBG {
+/* #mapBG {
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -59,7 +59,7 @@ html {
 	z-index: -2;
 	transition: ease-in-out 500ms;
 	clip-path: url('#myClip');
-}
+} */
 
 #rankingPanelBG {
 	position: absolute;

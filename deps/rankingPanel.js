@@ -1,5 +1,6 @@
 async function fetchData() {
     // START OF API
+    console.log("Start API fetching")
     apiGetSet = true;
     let playerData, playerBest;
     if (api !== '' && tempUsername !== '')
