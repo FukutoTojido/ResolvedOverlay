@@ -230,6 +230,7 @@ let tempSmooth;
 
 let tempSlotLength, tempCurrentPosition;
 let leaderboardSet = 0;
+let leaderboardFetch = false;
 let ourplayerSet = 0;
 let ourplayerContainer;
 
@@ -237,6 +238,9 @@ let minimodsContainerOP, tempMinimodsOP, minimodsCountOP;
 
 let colorSet = 0;
 let colorGet = get_bg_color('#nowPlayingContainer');
+
+let tempMapScores = [];
+let playerPosition;
 
 window.onload = function () {
     var ctx = document.getElementById('canvas').getContext('2d');
@@ -305,6 +309,7 @@ socket.onmessage = event => {
 
             setTimeout(() => {
                 leaderboard.innerHTML = '';
+                leaderboardFetch = false;
                 leaderboardSet = 0;
                 ourplayerSet = 0;
                 $('#ourplayer').remove();
@@ -355,6 +360,10 @@ socket.onmessage = event => {
         tempScore = data.gameplay.score;
         score.innerHTML = tempScore;
         animation.score.update(score.innerHTML);
+
+        if (tempMapScores.length > 0)
+            if (tempScore >= tempMapScores[playerPosition - 2])
+                playerPosition--;
     }
 
     if (tempAcc !== data.gameplay.accuracy) {
@@ -541,9 +550,15 @@ socket.onmessage = event => {
             if (leaderboardTab === "1")
                 document.getElementById("leaderboardx").style.opacity = (data.gameplay.leaderboard.isVisible === true) ? 0 : 1;
 
+            if (!leaderboardFetch) {
+                leaderboardFetch = true;
+                setupMapScores(tempMapID, tempUsername);
+                // console.log(tempMapScores);
+            }
+
             if (data.gameplay.leaderboard.slots !== null) {
-                if (tempSlotLength !== data.gameplay.leaderboard.slots.length) {
-                    tempSlotLength = data.gameplay.leaderboard.slots.length;
+                if (tempSlotLength !== tempMapScores.length) {
+                    tempSlotLength = tempMapScores.length;
                 }
 
                 document.getElementById("leaderboardx").style.transform = 'none';
@@ -586,107 +601,109 @@ socket.onmessage = event => {
 
                 if (!leaderboardSet && leaderboardEnable === "1") {
                     leaderboardSet = 1;
+                    // console.log(mapScores);
 
-                    for (var i = tempSlotLength - 1; i > 0; i--) {
-                        let playerContainer = document.createElement("div");
-                        playerContainer.id = `slot${i}`;
-                        playerContainer.setAttribute("class", "playerContainer");
-                        playerContainer.style.top = `${(i - 1) * 75}px`;
-                        // playerContainer.innerHTML = `
-                        // <span style="width: 190px;">${data.gameplay.leaderboard.slots[i - 1].name}</span>
-                        // ${grader(data.gameplay.leaderboard.slots[i - 1].h300, data.gameplay.leaderboard.slots[i - 1].h100, data.gameplay.leaderboard.slots[i - 1].h50, data.gameplay.leaderboard.slots[i - 1].h0, data.gameplay.leaderboard.slots[i - 1].mods.search("HD"))}
-                        // <br/>
-                        // <span style="display: inline-block; font-size: 15px; font-family: GothicRD; width: 100px;">${new Intl.NumberFormat().format(Number(data.gameplay.leaderboard.slots[i - 1].score))}</span>
-                        // <span style="display: inline-block; font-size: 15px; font-family: GothicRD; width: 50px;">${data.gameplay.leaderboard.slots[i - 1].maxCombo}x</span>
-                        // <span style="display: inline-block; font-size: 15px; font-family: GothicRD; width: 60px;">${accuracyCalc(data.gameplay.leaderboard.slots[i - 1].h300, data.gameplay.leaderboard.slots[i - 1].h100, data.gameplay.leaderboard.slots[i - 1].h50, data.gameplay.leaderboard.slots[i - 1].h0)}%</span>`;
+                    // for (var i = tempSlotLength - 1; i > 0; i--) {
+                    //     let playerContainer = document.createElement("div");
+                    //     playerContainer.id = `slot${i}`;
+                    //     playerContainer.setAttribute("class", "playerContainer");
+                    //     playerContainer.style.top = `${(i - 1) * 75}px`;
+                    //     // playerContainer.innerHTML = `
+                    //     // <span style="width: 190px;">${data.gameplay.leaderboard.slots[i - 1].name}</span>
+                    //     // ${grader(data.gameplay.leaderboard.slots[i - 1].h300, data.gameplay.leaderboard.slots[i - 1].h100, data.gameplay.leaderboard.slots[i - 1].h50, data.gameplay.leaderboard.slots[i - 1].h0, data.gameplay.leaderboard.slots[i - 1].mods.search("HD"))}
+                    //     // <br/>
+                    //     // <span style="display: inline-block; font-size: 15px; font-family: GothicRD; width: 100px;">${new Intl.NumberFormat().format(Number(data.gameplay.leaderboard.slots[i - 1].score))}</span>
+                    //     // <span style="display: inline-block; font-size: 15px; font-family: GothicRD; width: 50px;">${data.gameplay.leaderboard.slots[i - 1].maxCombo}x</span>
+                    //     // <span style="display: inline-block; font-size: 15px; font-family: GothicRD; width: 60px;">${accuracyCalc(data.gameplay.leaderboard.slots[i - 1].h300, data.gameplay.leaderboard.slots[i - 1].h100, data.gameplay.leaderboard.slots[i - 1].h50, data.gameplay.leaderboard.slots[i - 1].h0)}%</span>`;
 
-                        let playerNameLB = document.createElement("div");
-                        playerNameLB.innerHTML = `<div id="lb_name${i}" style="width: 200px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${data.gameplay.leaderboard.slots[i - 1].name}</div>`;
+                    //     let playerNameLB = document.createElement("div");
+                    //     playerNameLB.innerHTML = `<div id="lb_name${i}" style="width: 200px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${data.gameplay.leaderboard.slots[i - 1].name}</div>`;
 
-                        let playerScoreLB = document.createElement("div");
-                        playerScoreLB.innerHTML = `<div id="lb_score${i}" style="font-size: 15px; font-family: Torus; width: 100px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${new Intl.NumberFormat().format(Number(data.gameplay.leaderboard.slots[i - 1].score))}</div>`
+                    //     let playerScoreLB = document.createElement("div");
+                    //     playerScoreLB.innerHTML = `<div id="lb_score${i}" style="font-size: 15px; font-family: Torus; width: 100px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${new Intl.NumberFormat().format(Number(data.gameplay.leaderboard.slots[i - 1].score))}</div>`
 
-                        let playerComboLB = document.createElement("div");
-                        playerComboLB.innerHTML = `<div id="lb_combo${i}" style="font-size: 15px; font-family: Torus; width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${data.gameplay.leaderboard.slots[i - 1].maxCombo}x</div>`
+                    //     let playerComboLB = document.createElement("div");
+                    //     playerComboLB.innerHTML = `<div id="lb_combo${i}" style="font-size: 15px; font-family: Torus; width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${data.gameplay.leaderboard.slots[i - 1].maxCombo}x</div>`
 
-                        let playerAccLB = document.createElement("div");
-                        let raw_playerAcc = accuracyCalc(data.gameplay.leaderboard.slots[i - 1].h300, data.gameplay.leaderboard.slots[i - 1].h100, data.gameplay.leaderboard.slots[i - 1].h50, data.gameplay.leaderboard.slots[i - 1].h0);
-                        playerAccLB.innerHTML = `<div id="lb_acc${i}" style="font-size: 15px; font-family: Torus; width: 60px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${raw_playerAcc}%</div>`
+                    //     let playerAccLB = document.createElement("div");
+                    //     let raw_playerAcc = accuracyCalc(data.gameplay.leaderboard.slots[i - 1].h300, data.gameplay.leaderboard.slots[i - 1].h100, data.gameplay.leaderboard.slots[i - 1].h50, data.gameplay.leaderboard.slots[i - 1].h0);
+                    //     playerAccLB.innerHTML = `<div id="lb_acc${i}" style="font-size: 15px; font-family: Torus; width: 60px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${raw_playerAcc}%</div>`
 
-                        let playerGradeLB = document.createElement("div");
-                        let lb_hasHD = data.gameplay.leaderboard.slots[i - 1].mods.search("HD");
-                        let lb_h300 = data.gameplay.leaderboard.slots[i - 1].h300;
-                        let lb_h100 = data.gameplay.leaderboard.slots[i - 1].h100;
-                        let lb_h50 = data.gameplay.leaderboard.slots[i - 1].h50;
-                        let lb_h0 = data.gameplay.leaderboard.slots[i - 1].h0;
-                        let lb_combo = lb_h300 + lb_h100 + lb_h50 + lb_h0;
+                    //     let playerGradeLB = document.createElement("div");
+                    //     let lb_hasHD = data.gameplay.leaderboard.slots[i - 1].mods.search("HD");
+                    //     let lb_h300 = data.gameplay.leaderboard.slots[i - 1].h300;
+                    //     let lb_h100 = data.gameplay.leaderboard.slots[i - 1].h100;
+                    //     let lb_h50 = data.gameplay.leaderboard.slots[i - 1].h50;
+                    //     let lb_h0 = data.gameplay.leaderboard.slots[i - 1].h0;
+                    //     let lb_combo = lb_h300 + lb_h100 + lb_h50 + lb_h0;
 
-                        switch (true) {
-                            case (raw_playerAcc == 100 || lb_combo === 0):
-                                if (lb_hasHD === -1) {
-                                    playerGradeLB.innerHTML = `<div id="grade${i}" style="width: 50px; color: #de3950; filter: drop-shadow(0 0 5px #de3950)">X</div>`;
-                                    break;
-                                }
-                                playerGradeLB.innerHTML = `<div id=grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">X</div>`;
-                                break;
-                            case (raw_playerAcc > 90 && lb_h50 / lb_combo < 0.01 && lb_h0 === 0):
-                                if (lb_hasHD === -1) {
-                                    playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #f2d646; filter: drop-shadow(0 0 5px #f2d646)">S</div>`;
-                                    break;
-                                }
-                                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">S</div>`;
-                                break;
-                            case ((raw_playerAcc > 80 && raw_playerAcc <= 90 && lb_h0 === 0) || (lb_h300 / lb_combo > 0.9)):
-                                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #46f26e; filter: drop-shadow(0 0 5px #46f26e)">A</div>`;
-                                break;
-                            case ((raw_playerAcc > 70 && raw_playerAcc <= 80 && lb_h0 === 0) || (lb_h300 / lb_combo > 0.8)):
-                                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #469cf2; filter: drop-shadow(0 0 5px #469cf2)">B</div>`;
-                                break;
-                            case ((lb_h300 / lb_combo > 0.6) && (lb_h300 / lb_combo <= 0.8)):
-                                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #9f46f2; filter: drop-shadow(0 0 5px #9f46f2)">C</div>`;
-                                break;
-                            case ((lb_h300 / lb_combo <= 0.6)):
-                                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #ff0000; filter: drop-shadow(0 0 5px #ff0000)">D</div>`;
-                                break;
-                        }
+                    //     switch (true) {
+                    //         case (raw_playerAcc == 100 || lb_combo === 0):
+                    //             if (lb_hasHD === -1) {
+                    //                 playerGradeLB.innerHTML = `<div id="grade${i}" style="width: 50px; color: #de3950; filter: drop-shadow(0 0 5px #de3950)">X</div>`;
+                    //                 break;
+                    //             }
+                    //             playerGradeLB.innerHTML = `<div id=grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">X</div>`;
+                    //             break;
+                    //         case (raw_playerAcc > 90 && lb_h50 / lb_combo < 0.01 && lb_h0 === 0):
+                    //             if (lb_hasHD === -1) {
+                    //                 playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #f2d646; filter: drop-shadow(0 0 5px #f2d646)">S</div>`;
+                    //                 break;
+                    //             }
+                    //             playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">S</div>`;
+                    //             break;
+                    //         case ((raw_playerAcc > 80 && raw_playerAcc <= 90 && lb_h0 === 0) || (lb_h300 / lb_combo > 0.9)):
+                    //             playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #46f26e; filter: drop-shadow(0 0 5px #46f26e)">A</div>`;
+                    //             break;
+                    //         case ((raw_playerAcc > 70 && raw_playerAcc <= 80 && lb_h0 === 0) || (lb_h300 / lb_combo > 0.8)):
+                    //             playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #469cf2; filter: drop-shadow(0 0 5px #469cf2)">B</div>`;
+                    //             break;
+                    //         case ((lb_h300 / lb_combo > 0.6) && (lb_h300 / lb_combo <= 0.8)):
+                    //             playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #9f46f2; filter: drop-shadow(0 0 5px #9f46f2)">C</div>`;
+                    //             break;
+                    //         case ((lb_h300 / lb_combo <= 0.6)):
+                    //             playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #ff0000; filter: drop-shadow(0 0 5px #ff0000)">D</div>`;
+                    //             break;
+                    //     }
 
-                        playerContainer.appendChild(playerNameLB);
-                        playerContainer.appendChild(playerGradeLB);
-                        playerContainer.appendChild(playerScoreLB);
-                        playerContainer.appendChild(playerComboLB);
-                        playerContainer.appendChild(playerAccLB);
+                    //     playerContainer.appendChild(playerNameLB);
+                    //     playerContainer.appendChild(playerGradeLB);
+                    //     playerContainer.appendChild(playerScoreLB);
+                    //     playerContainer.appendChild(playerComboLB);
+                    //     playerContainer.appendChild(playerAccLB);
 
 
-                        let minimodsContainer = document.createElement("div");
-                        minimodsContainer.id = `minimodsContainerSlot${i}`;
-                        minimodsContainer.setAttribute("class", "minimodsContainer");
-                        playerContainer.appendChild(minimodsContainer);
-                        leaderboard.appendChild(playerContainer);
+                    //     let minimodsContainer = document.createElement("div");
+                    //     minimodsContainer.id = `minimodsContainerSlot${i}`;
+                    //     minimodsContainer.setAttribute("class", "minimodsContainer");
+                    //     playerContainer.appendChild(minimodsContainer);
+                    //     leaderboard.appendChild(playerContainer);
 
-                        let tempMinimods = data.gameplay.leaderboard.slots[i - 1].mods;
+                    //     let tempMinimods = data.gameplay.leaderboard.slots[i - 1].mods;
 
-                        let minimodsCount = tempMinimods.length;
+                    //     let minimodsCount = tempMinimods.length;
 
-                        for (var k = 0; k < minimodsCount; k++) {
-                            let mods = document.createElement("div");
-                            mods.id = tempMinimods.substr(k, 2) + i;
-                            mods.setAttribute("class", "minimods");
-                            mods.style.backgroundImage = `url('./static/minimods/${tempMinimods.substr(k, 2)}.png')`;
-                            mods.style.transform = `translateX(${k / 2 * 10}px)`;
-                            document.getElementById(`minimodsContainerSlot${i}`).appendChild(mods);
-                            k++;
-                        }
-                    }
+                    //     for (var k = 0; k < minimodsCount; k++) {
+                    //         let mods = document.createElement("div");
+                    //         mods.id = tempMinimods.substr(k, 2) + i;
+                    //         mods.setAttribute("class", "minimods");
+                    //         mods.style.backgroundImage = `url('./static/minimods/${tempMinimods.substr(k, 2)}.png')`;
+                    //         mods.style.transform = `translateX(${k / 2 * 10}px)`;
+                    //         document.getElementById(`minimodsContainerSlot${i}`).appendChild(mods);
+                    //         k++;
+                    //     }
+                    // }
                 }
 
-                if (tempCurrentPosition !== data.gameplay.leaderboard.ourplayer.position) {
-                    tempCurrentPosition = data.gameplay.leaderboard.ourplayer.position;
+                if (tempCurrentPosition !== playerPosition) {
+                    tempCurrentPosition = playerPosition;
+                    // console.log(tempCurrentPosition);
                 }
 
-                if (tempCurrentPosition === 0)
-                    ourplayerContainer.style.opacity = '0';
-                else
-                    ourplayerContainer.style.opacity = '1';
+                // if (tempCurrentPosition === 0)
+                //     ourplayerContainer.style.opacity = '0';
+                // else
+                //     ourplayerContainer.style.opacity = '1';
 
                 if (tempCurrentPosition > 5) {
                     leaderboard.style.transform = `translateY(${-(tempCurrentPosition - 6) * 75}px)`;
@@ -866,6 +883,101 @@ async function setupUser(name) {
     }
 }
 
+async function setupMapScores(beatmapID, name) {
+    const data = await getMapScores(beatmapID);
+    // console.log(data);
+
+    if (data) {
+        tempSlotLength = data.length;
+        playerPosition = data.length + 1;
+    }
+    else
+    {
+        tempSlotLength = 0;
+        playerPosition = 1;
+    }
+
+    for (var i = tempSlotLength; i > 0; i--) {
+        tempMapScores[i - 1] = parseInt(data[i - 1].score);
+        let playerContainer = document.createElement("div");
+        playerContainer.id = `slot${i}`;
+        playerContainer.setAttribute("class", "playerContainer");
+        playerContainer.style.top = `${(i - 1) * 75}px`;
+
+        let playerNameLB = document.createElement("div");
+        playerNameLB.innerHTML = `<div id="lb_name${i}" style="width: 200px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${data[i - 1].username}</div>`;
+
+        let playerScoreLB = document.createElement("div");
+        playerScoreLB.innerHTML = `<div id="lb_score${i}" style="font-size: 15px; font-family: Torus; width: 100px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${new Intl.NumberFormat().format(Number(data[i - 1].score))}</div>`
+
+        let playerComboLB = document.createElement("div");
+        playerComboLB.innerHTML = `<div id="lb_combo${i}" style="font-size: 15px; font-family: Torus; width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${data[i - 1].maxcombo}x</div>`
+
+        let playerAccLB = document.createElement("div");
+        let raw_playerAcc = accuracyCalc(parseInt(data[i - 1].count300), parseInt(data[i - 1].count100), parseInt(data[i - 1].count50), parseInt(data[i - 1].countmiss));
+        // console.log(raw_playerAcc);
+        playerAccLB.innerHTML = `<div id="lb_acc${i}" style="font-size: 15px; font-family: Torus; width: 60px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${raw_playerAcc}%</div>`
+
+        let playerGradeLB = document.createElement("div");
+        let lb_grade = data[i - 1].rank;
+
+        switch (lb_grade) {
+            case ("XH"):
+                playerGradeLB.innerHTML = `<div id=grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">X</div>`;
+                break;
+            case ("X"):
+                playerGradeLB.innerHTML = `<div id="grade${i}" style="width: 50px; color: #de3950; filter: drop-shadow(0 0 5px #de3950)">X</div>`;
+                break;
+            case ("S"):
+                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #f2d646; filter: drop-shadow(0 0 5px #f2d646)">S</div>`;
+                break;
+            case ("SH"):
+                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">S</div>`;
+                break;
+            case ("A"):
+                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #46f26e; filter: drop-shadow(0 0 5px #46f26e)">A</div>`;
+                break;
+            case ("B"):
+                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #469cf2; filter: drop-shadow(0 0 5px #469cf2)">B</div>`;
+                break;
+            case ("C"):
+                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #9f46f2; filter: drop-shadow(0 0 5px #9f46f2)">C</div>`;
+                break;
+            case ("D"):
+                playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #ff0000; filter: drop-shadow(0 0 5px #ff0000)">D</div>`;
+                break;
+        }
+
+        playerContainer.appendChild(playerNameLB);
+        playerContainer.appendChild(playerGradeLB);
+        playerContainer.appendChild(playerScoreLB);
+        playerContainer.appendChild(playerComboLB);
+        playerContainer.appendChild(playerAccLB);
+
+
+        let minimodsContainer = document.createElement("div");
+        minimodsContainer.id = `minimodsContainerSlot${i}`;
+        minimodsContainer.setAttribute("class", "minimodsContainer");
+        playerContainer.appendChild(minimodsContainer);
+        leaderboard.appendChild(playerContainer);
+
+        // let tempMinimods = data.gameplay.leaderboard.slots[i - 1].mods;
+
+        // let minimodsCount = tempMinimods.length;
+
+        // for (var k = 0; k < minimodsCount; k++) {
+        //     let mods = document.createElement("div");
+        //     mods.id = tempMinimods.substr(k, 2) + i;
+        //     mods.setAttribute("class", "minimods");
+        //     mods.style.backgroundImage = `url('./static/minimods/${tempMinimods.substr(k, 2)}.png')`;
+        //     mods.style.transform = `translateX(${k / 2 * 10}px)`;
+        //     document.getElementById(`minimodsContainerSlot${i}`).appendChild(mods);
+        //     k++;
+        // }
+    }
+    return data;
+}
+
 async function getUserDataSet(name) {
     try {
         const data = (
@@ -913,6 +1025,23 @@ async function getMapDataSet(beatmapID) {
             })
         )["data"];
         return data.length !== 0 ? data[0] : null;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+async function getMapScores(beatmapID) {
+    try {
+        const data = (
+            await axios.get("/get_scores", {
+                baseURL: "https://osu.ppy.sh/api",
+                params: {
+                    k: api,
+                    b: beatmapID,
+                },
+            })
+        )["data"];
+        return data.length !== 0 ? data : null;
     } catch (error) {
         console.error(error);
     }
