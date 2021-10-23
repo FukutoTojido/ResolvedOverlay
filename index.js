@@ -360,10 +360,6 @@ socket.onmessage = event => {
         tempScore = data.gameplay.score;
         score.innerHTML = tempScore;
         animation.score.update(score.innerHTML);
-
-        if (tempMapScores.length > 0)
-            if (tempScore >= tempMapScores[playerPosition - 2])
-                playerPosition--;
     }
 
     if (tempAcc !== data.gameplay.accuracy) {
@@ -379,7 +375,8 @@ socket.onmessage = event => {
 
     if (tempStrainBase !== JSON.stringify(data.menu.pp.strains)) {
         tempLink = JSON.stringify(data.menu.pp.strains);
-        smoothed = smooth(data.menu.pp.strains, smoothOffset);
+        if (data.menu.pp.strains)
+            smoothed = smooth(data.menu.pp.strains, smoothOffset);
         config.data.datasets[0].data = smoothed;
         config.data.datasets[0].backgroundColor = `rgba(${colorGet.r}, ${colorGet.g}, ${colorGet.b}, 0.2)`;
         config.data.labels = smoothed;
@@ -556,13 +553,13 @@ socket.onmessage = event => {
                 // console.log(tempMapScores);
             }
 
-            if (data.gameplay.leaderboard.slots !== null) {
-                if (tempSlotLength !== tempMapScores.length) {
-                    tempSlotLength = tempMapScores.length;
-                }
+            if (tempSlotLength !== tempMapScores.length) {
+                tempSlotLength = tempMapScores.length;
+            }
 
-                document.getElementById("leaderboardx").style.transform = 'none';
+            document.getElementById("leaderboardx").style.transform = 'none';
 
+            setTimeout(() => {
                 if (!ourplayerSet && leaderboardEnable === "1") {
                     ourplayerSet = 1;
                     ourplayerContainer = document.createElement("div");
@@ -576,7 +573,7 @@ socket.onmessage = event => {
                     document.getElementById("leaderboardx").appendChild(ourplayerContainer);
                     document.getElementById("ourplayer").appendChild(minimodsContainerOP);
 
-                    tempMinimodsOP = data.gameplay.leaderboard.ourplayer.mods;
+                    tempMinimodsOP = tempMods;
 
                     minimodsCountOP = tempMinimodsOP.length;
 
@@ -591,134 +588,37 @@ socket.onmessage = event => {
                     }
                 }
 
+                if (!tempUID)
+                    tempUID = '8266808';
+
                 ourplayerContainer.innerHTML = `
-                <div id="ourplayerName" style="width: 200px;">${data.gameplay.leaderboard.ourplayer.name}</div>
-                ${grader(data.gameplay.hits["300"], data.gameplay.hits["100"], data.gameplay.hits["50"], data.gameplay.hits["0"], data.gameplay.leaderboard.ourplayer.mods.search("HD"))}
-                <div id="ourplayerName" style="font-size: 15px; font-family: Torus; width: 100px;">${new Intl.NumberFormat().format(Number(data.gameplay.score))}</div>
-                <div id="ourplayerName" style="font-size: 15px; font-family: Torus; width: 50px;">${data.gameplay.combo.max}x</div>
-                <div id="ourplayerName" style="font-size: 15px; font-family: Torus; width: 60px;">${data.gameplay.accuracy.toFixed(2)}%</div>
-                ${$('#' + minimodsContainerOP.id).prop("outerHTML")}`;
+                    <div id="ourplayerAva" style="background-image: url('https://a.ppy.sh/${tempUID}')" class="leaderboardAvatar"></div>
+                    <div class="playerStatsContainer">
+                    <div id="ourplayerName" style="width: 180px;">${tempUsername}</div>
+                    ${grader(data.gameplay.hits["300"], data.gameplay.hits["100"], data.gameplay.hits["50"], data.gameplay.hits["0"], tempMods.search("HD"))}
+                    <div id="ourplayerScore" style="font-size: 15px; font-family: Torus; width: 100px;">${new Intl.NumberFormat().format(Number(data.gameplay.score))}</div>
+                    <div id="ourplayerCombo" style="font-size: 15px; font-family: Torus; width: 50px;">${data.gameplay.combo.max}x</div>
+                    <div id="ourplayerAcc" style="font-size: 15px; font-family: Torus; width: 60px;">${data.gameplay.accuracy.toFixed(2)}%</div>
+                    ${$('#' + minimodsContainerOP.id).prop("outerHTML")}
+                    </div>
+                `;
 
-                if (!leaderboardSet && leaderboardEnable === "1") {
-                    leaderboardSet = 1;
-                    // console.log(mapScores);
+            }, 1000)
 
-                    // for (var i = tempSlotLength - 1; i > 0; i--) {
-                    //     let playerContainer = document.createElement("div");
-                    //     playerContainer.id = `slot${i}`;
-                    //     playerContainer.setAttribute("class", "playerContainer");
-                    //     playerContainer.style.top = `${(i - 1) * 75}px`;
-                    //     // playerContainer.innerHTML = `
-                    //     // <span style="width: 190px;">${data.gameplay.leaderboard.slots[i - 1].name}</span>
-                    //     // ${grader(data.gameplay.leaderboard.slots[i - 1].h300, data.gameplay.leaderboard.slots[i - 1].h100, data.gameplay.leaderboard.slots[i - 1].h50, data.gameplay.leaderboard.slots[i - 1].h0, data.gameplay.leaderboard.slots[i - 1].mods.search("HD"))}
-                    //     // <br/>
-                    //     // <span style="display: inline-block; font-size: 15px; font-family: GothicRD; width: 100px;">${new Intl.NumberFormat().format(Number(data.gameplay.leaderboard.slots[i - 1].score))}</span>
-                    //     // <span style="display: inline-block; font-size: 15px; font-family: GothicRD; width: 50px;">${data.gameplay.leaderboard.slots[i - 1].maxCombo}x</span>
-                    //     // <span style="display: inline-block; font-size: 15px; font-family: GothicRD; width: 60px;">${accuracyCalc(data.gameplay.leaderboard.slots[i - 1].h300, data.gameplay.leaderboard.slots[i - 1].h100, data.gameplay.leaderboard.slots[i - 1].h50, data.gameplay.leaderboard.slots[i - 1].h0)}%</span>`;
-
-                    //     let playerNameLB = document.createElement("div");
-                    //     playerNameLB.innerHTML = `<div id="lb_name${i}" style="width: 200px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${data.gameplay.leaderboard.slots[i - 1].name}</div>`;
-
-                    //     let playerScoreLB = document.createElement("div");
-                    //     playerScoreLB.innerHTML = `<div id="lb_score${i}" style="font-size: 15px; font-family: Torus; width: 100px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${new Intl.NumberFormat().format(Number(data.gameplay.leaderboard.slots[i - 1].score))}</div>`
-
-                    //     let playerComboLB = document.createElement("div");
-                    //     playerComboLB.innerHTML = `<div id="lb_combo${i}" style="font-size: 15px; font-family: Torus; width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${data.gameplay.leaderboard.slots[i - 1].maxCombo}x</div>`
-
-                    //     let playerAccLB = document.createElement("div");
-                    //     let raw_playerAcc = accuracyCalc(data.gameplay.leaderboard.slots[i - 1].h300, data.gameplay.leaderboard.slots[i - 1].h100, data.gameplay.leaderboard.slots[i - 1].h50, data.gameplay.leaderboard.slots[i - 1].h0);
-                    //     playerAccLB.innerHTML = `<div id="lb_acc${i}" style="font-size: 15px; font-family: Torus; width: 60px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${raw_playerAcc}%</div>`
-
-                    //     let playerGradeLB = document.createElement("div");
-                    //     let lb_hasHD = data.gameplay.leaderboard.slots[i - 1].mods.search("HD");
-                    //     let lb_h300 = data.gameplay.leaderboard.slots[i - 1].h300;
-                    //     let lb_h100 = data.gameplay.leaderboard.slots[i - 1].h100;
-                    //     let lb_h50 = data.gameplay.leaderboard.slots[i - 1].h50;
-                    //     let lb_h0 = data.gameplay.leaderboard.slots[i - 1].h0;
-                    //     let lb_combo = lb_h300 + lb_h100 + lb_h50 + lb_h0;
-
-                    //     switch (true) {
-                    //         case (raw_playerAcc == 100 || lb_combo === 0):
-                    //             if (lb_hasHD === -1) {
-                    //                 playerGradeLB.innerHTML = `<div id="grade${i}" style="width: 50px; color: #de3950; filter: drop-shadow(0 0 5px #de3950)">X</div>`;
-                    //                 break;
-                    //             }
-                    //             playerGradeLB.innerHTML = `<div id=grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">X</div>`;
-                    //             break;
-                    //         case (raw_playerAcc > 90 && lb_h50 / lb_combo < 0.01 && lb_h0 === 0):
-                    //             if (lb_hasHD === -1) {
-                    //                 playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #f2d646; filter: drop-shadow(0 0 5px #f2d646)">S</div>`;
-                    //                 break;
-                    //             }
-                    //             playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">S</div>`;
-                    //             break;
-                    //         case ((raw_playerAcc > 80 && raw_playerAcc <= 90 && lb_h0 === 0) || (lb_h300 / lb_combo > 0.9)):
-                    //             playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #46f26e; filter: drop-shadow(0 0 5px #46f26e)">A</div>`;
-                    //             break;
-                    //         case ((raw_playerAcc > 70 && raw_playerAcc <= 80 && lb_h0 === 0) || (lb_h300 / lb_combo > 0.8)):
-                    //             playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #469cf2; filter: drop-shadow(0 0 5px #469cf2)">B</div>`;
-                    //             break;
-                    //         case ((lb_h300 / lb_combo > 0.6) && (lb_h300 / lb_combo <= 0.8)):
-                    //             playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #9f46f2; filter: drop-shadow(0 0 5px #9f46f2)">C</div>`;
-                    //             break;
-                    //         case ((lb_h300 / lb_combo <= 0.6)):
-                    //             playerGradeLB.innerHTML = `<div id="grade${i}"  style="width: 50px; color: #ff0000; filter: drop-shadow(0 0 5px #ff0000)">D</div>`;
-                    //             break;
-                    //     }
-
-                    //     playerContainer.appendChild(playerNameLB);
-                    //     playerContainer.appendChild(playerGradeLB);
-                    //     playerContainer.appendChild(playerScoreLB);
-                    //     playerContainer.appendChild(playerComboLB);
-                    //     playerContainer.appendChild(playerAccLB);
-
-
-                    //     let minimodsContainer = document.createElement("div");
-                    //     minimodsContainer.id = `minimodsContainerSlot${i}`;
-                    //     minimodsContainer.setAttribute("class", "minimodsContainer");
-                    //     playerContainer.appendChild(minimodsContainer);
-                    //     leaderboard.appendChild(playerContainer);
-
-                    //     let tempMinimods = data.gameplay.leaderboard.slots[i - 1].mods;
-
-                    //     let minimodsCount = tempMinimods.length;
-
-                    //     for (var k = 0; k < minimodsCount; k++) {
-                    //         let mods = document.createElement("div");
-                    //         mods.id = tempMinimods.substr(k, 2) + i;
-                    //         mods.setAttribute("class", "minimods");
-                    //         mods.style.backgroundImage = `url('./static/minimods/${tempMinimods.substr(k, 2)}.png')`;
-                    //         mods.style.transform = `translateX(${k / 2 * 10}px)`;
-                    //         document.getElementById(`minimodsContainerSlot${i}`).appendChild(mods);
-                    //         k++;
-                    //     }
-                    // }
-                }
-
-                if (tempCurrentPosition !== playerPosition) {
-                    tempCurrentPosition = playerPosition;
-                    // console.log(tempCurrentPosition);
-                }
-
-                // if (tempCurrentPosition === 0)
-                //     ourplayerContainer.style.opacity = '0';
-                // else
-                //     ourplayerContainer.style.opacity = '1';
-
-                if (tempCurrentPosition > 5) {
-                    leaderboard.style.transform = `translateY(${-(tempCurrentPosition - 6) * 75}px)`;
-                    document.getElementById("ourplayer").style.transform = `none`;
-                }
-                else {
-                    leaderboard.style.transform = 'translateY(0)';
-                    document.getElementById("ourplayer").style.transform = `translateY(-${(6 - tempCurrentPosition) * 75}px)`
-                }
+            if (playerPosition > 5) {
+                leaderboard.style.transform = `translateY(${-(playerPosition - 6) * 75}px)`;
+                document.getElementById("ourplayer").style.transform = `none`;
+            }
+            else {
+                leaderboard.style.transform = 'translateY(0)';
+                document.getElementById("ourplayer").style.transform = `translateY(-${(6 - playerPosition) * 75}px)`
+            }
+            if (tempSlotLength > 0)
                 for (var i = 1; i <= tempSlotLength; i++) {
-                    if (i >= tempCurrentPosition && tempCurrentPosition !== 0) {
+                    if (i >= playerPosition && playerPosition !== 0) {
                         document.getElementById(`slot${i}`).style.transform = `translateY(75px)`;
                     }
                 }
-            }
 
             if (interfaceID == 1 && gameState == 2) {
                 upperPart.style.transform = "translateY(-200px)";
@@ -731,6 +631,10 @@ socket.onmessage = event => {
             }
         }
     }
+
+    if (tempMapScores.length > 0)
+        if (tempScore >= tempMapScores[playerPosition - 2])
+            playerPosition--;
 
     if (data.gameplay.hp.smooth > 0) {
         hp.style.clipPath = `polygon(${(1 - data.gameplay.hp.smooth / 200) * 40 + 6.3}% 0%, ${(data.gameplay.hp.smooth / 200) * 40 + 53.7}% 0%, ${(data.gameplay.hp.smooth / 200) * 40 + 53.7}% 100%, ${(1 - data.gameplay.hp.smooth / 200) * 40 + 6.3}% 100%)`;
@@ -891,20 +795,81 @@ async function setupMapScores(beatmapID, name) {
         tempSlotLength = data.length;
         playerPosition = data.length + 1;
     }
-    else
-    {
+    else {
         tempSlotLength = 0;
         playerPosition = 1;
     }
 
     for (var i = tempSlotLength; i > 0; i--) {
         tempMapScores[i - 1] = parseInt(data[i - 1].score);
+
+        let tempModsLB = (parseInt(data[i - 1].enabled_mods) >>> 0).toString(2).padStart(15, '0');
+        let tempModsLiteral = "";
+
+        if (tempModsLB !== '000000000000000')
+            for (var j = 14; j >= 0; j--) {
+                if (tempModsLB[j] === '1') {
+                    switch (j) {
+                        case 0:
+                            tempModsLiteral += "PF";
+                            break;
+                        case 1:
+                            tempModsLiteral += "AP";
+                            break;
+                        case 2:
+                            tempModsLiteral += "SO";
+                            break;
+                        case 3:
+                            tempModsLiteral += "AT";
+                            break;
+                        case 4:
+                            tempModsLiteral += "FL";
+                            break;
+                        case 5:
+                            tempModsLiteral += "NC";
+                            break;
+                        case 6:
+                            tempModsLiteral += "HT";
+                            break;
+                        case 7:
+                            tempModsLiteral += "RX";
+                            break;
+                        case 8:
+                            tempModsLiteral += "DT";
+                            break;
+                        case 9:
+                            tempModsLiteral += "SD";
+                            break;
+                        case 10:
+                            tempModsLiteral += "HR";
+                            break;
+                        case 11:
+                            tempModsLiteral += "HD";
+                            break;
+                        case 12:
+                            tempModsLiteral += "TD";
+                            break;
+                        case 13:
+                            tempModsLiteral += "EZ";
+                            break;
+                        case 14:
+                            tempModsLiteral += "NF";
+                            break;
+                    }
+                }
+            }
+        else
+            tempModsLiteral = "NM";
+        // console.log(tempModsLiteral);
+
         let playerContainer = document.createElement("div");
         playerContainer.id = `slot${i}`;
         playerContainer.setAttribute("class", "playerContainer");
         playerContainer.style.top = `${(i - 1) * 75}px`;
 
-        let playerNameLB = `<div id="lb_name${i}" style="width: 200px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${data[i - 1].username}</div>`;
+        let playerAvatarLB = `<div id="lb_ava${i}" style="background-image: url('https://a.ppy.sh/${data[i - 1].user_id}')" class="leaderboardAvatar"></div>`;
+
+        let playerNameLB = `<div id="lb_name${i}" style="width: 180px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${data[i - 1].username}</div>`;
 
         let playerScoreLB = `<div id="lb_score${i}" style="font-size: 15px; font-family: Torus; width: 100px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${new Intl.NumberFormat().format(Number(data[i - 1].score))}</div>`
 
@@ -950,33 +915,34 @@ async function setupMapScores(beatmapID, name) {
         // playerContainer.appendChild(playerComboLB);
         // playerContainer.appendChild(playerAccLB);
 
-        playerContainer.innerHTML = `${playerNameLB}
+        playerContainer.innerHTML = `${playerAvatarLB}
+            <div class="playerStatsContainer">${playerNameLB}
             ${playerGradeLB}
             ${playerScoreLB}
             ${playerComboLB}
-            ${playerAccLB}
+            ${playerAccLB}<div>
         `
 
 
-        // let minimodsContainer = document.createElement("div");
-        // minimodsContainer.id = `minimodsContainerSlot${i}`;
-        // minimodsContainer.setAttribute("class", "minimodsContainer");
-        // playerContainer.appendChild(minimodsContainer);
+        let minimodsContainer = document.createElement("div");
+        minimodsContainer.id = `minimodsContainerSlot${i}`;
+        minimodsContainer.setAttribute("class", "minimodsContainer");
+        playerContainer.appendChild(minimodsContainer);
         document.getElementById("leaderboard").appendChild(playerContainer);
 
         // let tempMinimods = data.gameplay.leaderboard.slots[i - 1].mods;
 
-        // let minimodsCount = tempMinimods.length;
+        let minimodsCount = tempModsLiteral.length;
 
-        // for (var k = 0; k < minimodsCount; k++) {
-        //     let mods = document.createElement("div");
-        //     mods.id = tempMinimods.substr(k, 2) + i;
-        //     mods.setAttribute("class", "minimods");
-        //     mods.style.backgroundImage = `url('./static/minimods/${tempMinimods.substr(k, 2)}.png')`;
-        //     mods.style.transform = `translateX(${k / 2 * 10}px)`;
-        //     document.getElementById(`minimodsContainerSlot${i}`).appendChild(mods);
-        //     k++;
-        // }
+        for (var k = 0; k < minimodsCount; k++) {
+            let mods = document.createElement("div");
+            mods.id = tempModsLiteral.substr(k, 2) + i;
+            mods.setAttribute("class", "minimods");
+            mods.style.backgroundImage = `url('./static/minimods/${tempModsLiteral.substr(k, 2)}.png')`;
+            mods.style.transform = `translateX(${k / 2 * 10}px)`;
+            document.getElementById(`minimodsContainerSlot${i}`).appendChild(mods);
+            k++;
+        }
     }
 }
 
