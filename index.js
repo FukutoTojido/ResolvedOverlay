@@ -1,5 +1,10 @@
 const file = [];
-let api = "", leaderboardEnable = "1", leaderboardTab = "0";
+let api = "",
+    leaderboardEnable = "1",
+    leaderboardTab = "0",
+    uname = "",
+    pwd = "",
+    countryToggle = 0;
 async function getAPI() {
     try {
         const jsonData = await $.getJSON("config.json");
@@ -10,16 +15,21 @@ async function getAPI() {
         leaderboardEnable = file[1].leaderboardEnable;
         leaderboardTab = file[1].leaderboardTab;
         document.getElementById("recorderName").innerHTML = file[2].recorder;
-        document.getElementById("resultRecorder").innerHTML = `Recorder: ${file[2].recorder}`;
+        document.getElementById(
+            "resultRecorder"
+        ).innerHTML = `Recorder: ${file[2].recorder}`;
+        uname = file[3].username;
+        pwd = file[3].password;
+        countryToggle = file[3].countryToggle;
     } catch (error) {
         console.error("Could not read JSON file", error);
     }
-};
+}
 getAPI();
 
 // START
 let socket = new ReconnectingWebSocket("ws://127.0.0.1:24050/ws");
-let mapid = document.getElementById('mapid');
+let mapid = document.getElementById("mapid");
 let mapBG = document.getElementById("mapBG");
 let rankingPanelBG = document.getElementById("rankingPanelBG");
 let recorder = document.getElementById("recorder");
@@ -29,7 +39,7 @@ let resultRecorder = document.getElementById("resultRecorder");
 // NOW PLAYING
 let mapContainer = document.getElementById("nowPlayingContainer");
 let mapTitle = document.getElementById("mapTitle");
-let mapDesc = document.getElementById("mapDesc")
+let mapDesc = document.getElementById("mapDesc");
 let stars = document.getElementById("stars");
 let starsCurrent = document.getElementById("starsCurrent");
 let overlay = document.getElementById("overlay");
@@ -38,7 +48,7 @@ let overlay = document.getElementById("overlay");
 let upperPart = document.getElementById("top");
 let score = document.getElementById("score");
 let acc = document.getElementById("acc");
-let combo = document.getElementById("combo")
+let combo = document.getElementById("combo");
 
 // ACCURACY INFO
 let bottom = document.getElementById("bottom");
@@ -127,54 +137,60 @@ function numberWithCommas(x) {
 }
 
 let animation = {
-    acc: new CountUp('acc', 0, 0, 2, .2, {
+    acc: new CountUp("acc", 0, 0, 2, 0.2, {
         useEasing: true,
         useGrouping: false,
         separator: " ",
         decimal: ".",
-        suffix: "%"
+        suffix: "%",
     }),
-    score: new CountUp('score', 0, 0, 0, .2, {
-        useEasing: true,
-        useGrouping: true,
-        separator: " ",
-        decimal: "."
-    }),
-    combo: new CountUp('combo', 0, 0, 0, .2, {
+    score: new CountUp("score", 0, 0, 0, 0.2, {
         useEasing: true,
         useGrouping: true,
         separator: " ",
         decimal: ".",
-        suffix: "x"
     }),
-    starsCurrent: new CountUp('starsCurrent', 0, 0, 2, .2, {
+    combo: new CountUp("combo", 0, 0, 0, 0.2, {
+        useEasing: true,
+        useGrouping: true,
+        separator: " ",
+        decimal: ".",
+        suffix: "x",
+    }),
+    starsCurrent: new CountUp("starsCurrent", 0, 0, 2, 0.2, {
         useEasing: true,
         useGrouping: true,
         separator: " ",
         decimal: ".",
         prefix: "Now: ",
-        suffix: "*"
+        suffix: "*",
     }),
-    stars: new CountUp('stars', 0, 0, 2, .2, {
+    stars: new CountUp("stars", 0, 0, 2, 0.2, {
         useEasing: true,
         useGrouping: true,
         separator: " ",
         decimal: ".",
         prefix: "Full: ",
-        suffix: "*"
+        suffix: "*",
     }),
-}
+};
 
-socket.onclose = event => {
+socket.onclose = (event) => {
     console.log("Socket Closed Connection: ", event);
     socket.send("Client Closed!");
 };
 
-socket.onerror = error => {
+socket.onerror = (error) => {
     console.log("Socket Error: ", error);
 };
 
-let tempMapID, tempImg, tempMapArtist, tempMapTitle, tempMapDiff, tempMapper, tempRankedStatus;
+let tempMapID,
+    tempImg,
+    tempMapArtist,
+    tempMapTitle,
+    tempMapDiff,
+    tempMapper,
+    tempRankedStatus;
 
 let tempSR, tempCS, tempAR, tempOD, tempHPDr;
 
@@ -230,34 +246,35 @@ let tempSmooth;
 
 let tempSlotLength, tempCurrentPosition;
 let leaderboardSet = 0;
-let leaderboardFetch = false;
+let leaderboardFetch;
 let ourplayerSet = 0;
 let ourplayerContainer;
 
 let minimodsContainerOP, tempMinimodsOP, minimodsCountOP;
 
 let colorSet = 0;
-let colorGet = get_bg_color('#nowPlayingContainer');
+let colorGet = get_bg_color("#nowPlayingContainer");
 
 let tempMapScores = [];
 let playerPosition;
 
 window.onload = function () {
-    var ctx = document.getElementById('canvas').getContext('2d');
+    var ctx = document.getElementById("canvas").getContext("2d");
     window.myLine = new Chart(ctx, config);
 
-    var ctxSecond = document.getElementById('canvasSecond').getContext('2d');
+    var ctxSecond = document.getElementById("canvasSecond").getContext("2d");
     window.myLineSecond = new Chart(ctxSecond, configSecond);
 };
 
-socket.onmessage = event => {
+socket.onmessage = (event) => {
     let data = JSON.parse(event.data);
 
     if (!colorSet) {
         colorSet = 1;
-        setTimeout(function () { colorGet = get_bg_color('#nowPlayingContainer') }, 550);
+        setTimeout(function () {
+            colorGet = get_bg_color("#nowPlayingContainer");
+        }, 550);
     }
-
 
     switch (leaderboardEnable) {
         case "1":
@@ -276,18 +293,27 @@ socket.onmessage = event => {
 
     if (tempImg !== data.menu.bm.path.full) {
         tempImg = data.menu.bm.path.full;
-        data.menu.bm.path.full = data.menu.bm.path.full.replace(/#/g, '%23').replace(/%/g, '%25').replace(/\\/g, '/').replace(/'/g, '%27');
-        mapContainer.style.backgroundImage = `url('http://127.0.0.1:24050/Songs/${data.menu.bm.path.full}?a=${Math.random(10000)}')`;
-        mapBG.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('http://127.0.0.1:24050/Songs/${data.menu.bm.path.full}?a=${Math.random(10000)}')`;
-        rankingPanelBG.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('http://127.0.0.1:24050/Songs/${data.menu.bm.path.full}?a=${Math.random(10000)}')`;
+        data.menu.bm.path.full = data.menu.bm.path.full
+            .replace(/#/g, "%23")
+            .replace(/%/g, "%25")
+            .replace(/\\/g, "/")
+            .replace(/'/g, "%27");
+        mapContainer.style.backgroundImage = `url('http://127.0.0.1:24050/Songs/${
+            data.menu.bm.path.full
+        }?a=${Math.random(10000)}')`;
+        mapBG.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('http://127.0.0.1:24050/Songs/${
+            data.menu.bm.path.full
+        }?a=${Math.random(10000)}')`;
+        rankingPanelBG.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('http://127.0.0.1:24050/Songs/${
+            data.menu.bm.path.full
+        }?a=${Math.random(10000)}')`;
         mapContainer.style.backgroundPosition = "50% 50%";
     }
 
     if (gameState !== data.menu.state) {
         gameState = data.menu.state;
         if (gameState !== 2) {
-            if (gameState !== 7)
-                deRankingPanel();
+            if (gameState !== 7) deRankingPanel();
             upperPart.style.transform = "translateY(-200px)";
 
             tickPos = 0;
@@ -299,27 +325,28 @@ socket.onmessage = event => {
             avgHitError.style.transform = "translateX(0)";
 
             bottom.style.transform = "translateY(300px)";
-            URIndex.style.transform = 'none';
+            URIndex.style.transform = "none";
 
-            document.getElementById("modContainer").style.transform = "translateX(500px)";
+            document.getElementById("modContainer").style.transform =
+                "translateX(500px)";
 
-            document.getElementById("leaderboardx").style.transform = "translateX(-400px)";
+            document.getElementById("leaderboardx").style.transform =
+                "translateX(-400px)";
 
-            URIndex.innerHTML = '';
+            URIndex.innerHTML = "";
 
             setTimeout(() => {
-                leaderboard.innerHTML = '';
+                leaderboard.innerHTML = "";
                 leaderboardFetch = false;
                 leaderboardSet = 0;
                 ourplayerSet = 0;
-                $('#ourplayer').remove();
-            }, 1000)
-        }
-        else {
+                $("#ourplayer").remove();
+            }, 1000);
+        } else {
             deRankingPanel();
-            upperPart.style.transform = 'none';
-            bottom.style.transform = 'none';
-            document.getElementById("modContainer").style.transform = 'none';
+            upperPart.style.transform = "none";
+            bottom.style.transform = "none";
+            document.getElementById("modContainer").style.transform = "none";
         }
     }
 
@@ -328,7 +355,7 @@ socket.onmessage = event => {
         tempMapID = data.menu.bm.id;
         tempMapArtist = data.menu.bm.metadata.artist;
         tempMapTitle = data.menu.bm.metadata.title;
-        tempMapDiff = '[' + data.menu.bm.metadata.difficulty + ']';
+        tempMapDiff = "[" + data.menu.bm.metadata.difficulty + "]";
         tempMapper = data.menu.bm.metadata.mapper;
         tempRankedStatus = data.menu.bm.rankedStatus;
 
@@ -340,18 +367,34 @@ socket.onmessage = event => {
 
         tempFirstObj = data.menu.bm.time.firstObj;
 
-        mapName.innerHTML = tempMapArtist + ' - ' + tempMapTitle;
+        mapName.innerHTML = tempMapArtist + " - " + tempMapTitle;
 
         mapInfo.innerHTML = `${tempMapDiff}`;
 
-        stats.innerHTML = 'CS: ' + tempCS + '&emsp;' + 'AR: ' + tempAR + '&emsp;' + 'OD: ' + tempOD + '&emsp;' + 'HP: ' + tempHPDr + '&emsp;' + 'Star Rating: ' + tempSR + '*';
+        stats.innerHTML =
+            "CS: " +
+            tempCS +
+            "&emsp;" +
+            "AR: " +
+            tempAR +
+            "&emsp;" +
+            "OD: " +
+            tempOD +
+            "&emsp;" +
+            "HP: " +
+            tempHPDr +
+            "&emsp;" +
+            "Star Rating: " +
+            tempSR +
+            "*";
     }
 
     if (tempGrade !== data.gameplay.hits.grade.current) {
         tempGrade = data.gameplay.hits.grade.current;
     }
 
-    if (data.gameplay.score == 0) { }
+    if (data.gameplay.score == 0) {
+    }
 
     if (tempScore !== data.gameplay.score) {
         tempTotalAvg = 0;
@@ -388,44 +431,55 @@ socket.onmessage = event => {
             window.myLineSecond.update();
         }
     }
-    if (seek !== data.menu.bm.time.current && fullTime !== undefined && fullTime !== 0) {
+    if (
+        seek !== data.menu.bm.time.current &&
+        fullTime !== undefined &&
+        fullTime !== 0
+    ) {
         seek = data.menu.bm.time.current;
-        progressChart.style.width = onepart * seek + 'px';
+        progressChart.style.width = onepart * seek + "px";
     }
     if (tempMods !== data.menu.mods.str) {
         document.getElementById("modContainer").innerHTML = "";
 
         tempMods = data.menu.mods.str;
 
-        if (tempMods.search("HD") !== -1)
-            isHidden = true;
-        else
-            isHidden = false;
+        if (tempMods.search("HD") !== -1) isHidden = true;
+        else isHidden = false;
 
         let modsCount = tempMods.length;
 
         for (var i = 0; i < modsCount; i++) {
-            if (tempMods.substr(i, 2) !== "NM" || tempMods.substr(i, 2) !== "TD") {
+            if (
+                tempMods.substr(i, 2) !== "NM" ||
+                tempMods.substr(i, 2) !== "TD"
+            ) {
                 let mods = document.createElement("div");
                 mods.id = tempMods.substr(i, 2);
                 mods.setAttribute("class", "mods");
-                mods.style.backgroundImage = `url('./static/mods/${tempMods.substr(i, 2)}.png')`;
-                mods.style.transform = `translateX(${i / 2 * 30}px)`;
+                mods.style.backgroundImage = `url('./static/mods/${tempMods.substr(
+                    i,
+                    2
+                )}.png')`;
+                mods.style.transform = `translateX(${(i / 2) * 30}px)`;
                 document.getElementById("modContainer").appendChild(mods);
             }
             i++;
         }
 
         if (OD !== data.menu.bm.stats.OD) {
-            if (data.menu.mods.str.indexOf("DT") == -1 || data.menu.mods.str.indexOf("NC") == -1) {
+            if (
+                data.menu.mods.str.indexOf("DT") == -1 ||
+                data.menu.mods.str.indexOf("NC") == -1
+            ) {
                 OD = data.menu.bm.stats.OD;
             } else {
-                OD = 500 / 333 * data.menu.bm.stats.OD + (-2210) / 333;
+                OD = (500 / 333) * data.menu.bm.stats.OD + -2210 / 333;
             }
             if (data.menu.mods.str.indexOf("HT") == -1) {
                 OD = data.menu.bm.stats.OD;
             } else {
-                OD = 500 / 667 * data.menu.bm.stats.OD + (-2210) / 667;
+                OD = (500 / 667) * data.menu.bm.stats.OD + -2210 / 667;
             }
         }
     }
@@ -444,16 +498,24 @@ socket.onmessage = event => {
         if (tempHitErrorArrayLength !== tempSmooth.length) {
             tempHitErrorArrayLength = tempSmooth.length;
             for (var a = 0; a < tempHitErrorArrayLength; a++) {
-
-                tempAvg = tempAvg * 0.90 + tempSmooth[a] * 0.1;
+                tempAvg = tempAvg * 0.9 + tempSmooth[a] * 0.1;
             }
-            fullPos = (-10 * OD + 199.5);
-            tickPos = data.gameplay.hits.hitErrorArray[tempHitErrorArrayLength - 1] / fullPos * 145;
-            avgHitError.style.transform = `translateX(${(tempAvg / fullPos) * 150}px)`;
-            l100.style.width = `${(-8 * OD + 139.5) / fullPos * 300}px`;
-            l100.style.transform = `translateX(${(209.8 - ((-8 * OD + 139.5) / fullPos * 300)) / 2}px)`;
-            l300.style.width = `${(-6 * OD + 79.5) / fullPos * 300}px`;
-            l300.style.transform = `translateX(${(119.5 - ((-6 * OD + 79.5) / fullPos * 300)) / 2}px)`;
+            fullPos = -10 * OD + 199.5;
+            tickPos =
+                (data.gameplay.hits.hitErrorArray[tempHitErrorArrayLength - 1] /
+                    fullPos) *
+                145;
+            avgHitError.style.transform = `translateX(${
+                (tempAvg / fullPos) * 150
+            }px)`;
+            l100.style.width = `${((-8 * OD + 139.5) / fullPos) * 300}px`;
+            l100.style.transform = `translateX(${
+                (209.8 - ((-8 * OD + 139.5) / fullPos) * 300) / 2
+            }px)`;
+            l300.style.width = `${((-6 * OD + 79.5) / fullPos) * 300}px`;
+            l300.style.transform = `translateX(${
+                (119.5 - ((-6 * OD + 79.5) / fullPos) * 300) / 2
+            }px)`;
             let tick = document.createElement("div");
             tick.id = `tick${tempHitErrorArrayLength}`;
             tick.setAttribute("class", "tick");
@@ -498,7 +560,6 @@ socket.onmessage = event => {
         pp.innerHTML = tempPP;
     }
 
-
     if (tempTimeCurrent !== data.menu.bm.time.current) {
         // if (tempTimeCurrent > data.menu.bm.time.current) {
         //     leaderboard.innerHTML = '';
@@ -511,67 +572,79 @@ socket.onmessage = event => {
         tempTimeMP3 = data.menu.bm.time.mp3;
         interfaceID = data.settings.showInterface;
 
-        if (tempTimeCurrent >= tempFirstObj + 5000 && tempTimeCurrent <= tempFirstObj + 11900 && gameState == 2) {
+        if (
+            tempTimeCurrent >= tempFirstObj + 5000 &&
+            tempTimeCurrent <= tempFirstObj + 11900 &&
+            gameState == 2
+        ) {
             recorder.style.transform = "translateX(600px)";
             if (tempTimeCurrent >= tempFirstObj + 5500)
                 recorderName.style.transform = "translateX(600px)";
-        }
-        else {
-            recorder.style.transform = 'none';
-            recorderName.style.transform = 'none';
+        } else {
+            recorder.style.transform = "none";
+            recorderName.style.transform = "none";
         }
 
-        if (tempTimeCurrent >= tempTimeFull - 10000 && gameState === 2 && !apiGetSet)
+        if (
+            tempTimeCurrent >= tempTimeFull - 10000 &&
+            gameState === 2 &&
+            !apiGetSet
+        )
             fetchData();
 
         if (tempTimeCurrent >= tempTimeMP3 - 2000 && gameState === 2)
             rankingPanelBG.style.opacity = 1;
 
         if (gameState === 7) {
-            if (!rankingPanelSet)
-                setupRankingPanel();
-            if (tempGrade !== '')
+            if (!rankingPanelSet) setupRankingPanel();
+            if (tempGrade !== "")
                 if (!isHidden)
                     rankingResult.style.backgroundImage = `url('./static/rankings/${tempGrade}.png')`;
-                else if (tempGrade === 'S' || tempGrade === 'SS')
+                else if (tempGrade === "S" || tempGrade === "SS")
                     rankingResult.style.backgroundImage = `url('./static/rankings/${tempGrade}H.png')`;
                 else
                     rankingResult.style.backgroundImage = `url('./static/rankings/${tempGrade}.png')`;
-        } else
-            if (!(tempTimeCurrent >= tempTimeFull - 500 && gameState === 2))
-                rankingPanelBG.style.opacity = 0;
+        } else if (!(tempTimeCurrent >= tempTimeFull - 500 && gameState === 2))
+            rankingPanelBG.style.opacity = 0;
 
         if (gameState == 2) {
             upperPart.style.transform = "none";
 
             if (leaderboardTab === "1")
-                document.getElementById("leaderboardx").style.opacity = (data.gameplay.leaderboard.isVisible === true) ? 0 : 1;
+                document.getElementById("leaderboardx").style.opacity =
+                    data.gameplay.leaderboard.isVisible === true ? 0 : 1;
 
-            if (!leaderboardFetch) {
-                leaderboardFetch = true;
-                setupMapScores(tempMapID, tempUsername);
-                // console.log(tempMapScores);
-            }
+            setupMapScores(tempMapID, tempUsername, countryToggle);
 
             if (tempSlotLength !== tempMapScores.length) {
                 tempSlotLength = tempMapScores.length;
             }
 
-            document.getElementById("leaderboardx").style.transform = 'none';
+            document.getElementById("leaderboardx").style.transform = "none";
 
             setTimeout(() => {
                 if (!ourplayerSet && leaderboardEnable === "1") {
                     ourplayerSet = 1;
                     ourplayerContainer = document.createElement("div");
                     ourplayerContainer.id = "ourplayer";
-                    ourplayerContainer.setAttribute("class", "ourplayerContainer");
+                    ourplayerContainer.setAttribute(
+                        "class",
+                        "ourplayerContainer"
+                    );
 
                     minimodsContainerOP = document.createElement("div");
                     minimodsContainerOP.id = `minimodsContainerOurPlayer`;
-                    minimodsContainerOP.setAttribute("class", "minimodsContainer");
+                    minimodsContainerOP.setAttribute(
+                        "class",
+                        "minimodsContainer"
+                    );
 
-                    document.getElementById("leaderboardx").appendChild(ourplayerContainer);
-                    document.getElementById("ourplayer").appendChild(minimodsContainerOP);
+                    document
+                        .getElementById("leaderboardx")
+                        .appendChild(ourplayerContainer);
+                    document
+                        .getElementById("ourplayer")
+                        .appendChild(minimodsContainerOP);
 
                     tempMinimodsOP = tempMods;
 
@@ -581,42 +654,68 @@ socket.onmessage = event => {
                         let mods = document.createElement("div");
                         mods.id = tempMinimodsOP.substr(k, 2) + "OurPlayer";
                         mods.setAttribute("class", "minimods");
-                        mods.style.backgroundImage = `url('./static/minimods/${tempMinimodsOP.substr(k, 2)}.png')`;
-                        mods.style.transform = `translateX(${k / 2 * 10}px)`;
-                        document.getElementById(`minimodsContainerOurPlayer`).appendChild(mods);
+                        mods.style.backgroundImage = `url('./static/minimods/${tempMinimodsOP.substr(
+                            k,
+                            2
+                        )}.png')`;
+                        mods.style.transform = `translateX(${(k / 2) * 10}px)`;
+                        document
+                            .getElementById(`minimodsContainerOurPlayer`)
+                            .appendChild(mods);
                         k++;
                     }
                 }
 
-                if (!tempUID)
-                    tempUID = '8266808';
+                if (!tempUID) tempUID = "8266808";
 
                 ourplayerContainer.innerHTML = `
                     <div id="ourplayerAva" style="background-image: url('https://a.ppy.sh/${tempUID}')" class="leaderboardAvatar"></div>
                     <div class="playerStatsContainer">
                     <div id="ourplayerName" style="width: 180px;">${tempUsername}</div>
-                    ${grader(data.gameplay.hits["300"], data.gameplay.hits["100"], data.gameplay.hits["50"], data.gameplay.hits["0"], tempMods.search("HD"))}
-                    <div id="ourplayerScore" style="font-size: 15px; font-family: Torus; width: 100px;">${new Intl.NumberFormat().format(Number(data.gameplay.score))}</div>
-                    <div id="ourplayerCombo" style="font-size: 15px; font-family: Torus; width: 50px;">${data.gameplay.combo.max}x</div>
-                    <div id="ourplayerAcc" style="font-size: 15px; font-family: Torus; width: 60px;">${data.gameplay.accuracy.toFixed(2)}%</div>
-                    ${$('#' + minimodsContainerOP.id).prop("outerHTML")}
+                    ${grader(
+                        data.gameplay.hits["300"],
+                        data.gameplay.hits["100"],
+                        data.gameplay.hits["50"],
+                        data.gameplay.hits["0"],
+                        tempMods.search("HD")
+                    )}
+                    <div id="ourplayerScore" style="font-size: 15px; font-family: Torus; width: 100px;">${new Intl.NumberFormat().format(
+                        Number(data.gameplay.score)
+                    )}</div>
+                    <div id="ourplayerCombo" style="font-size: 15px; font-family: Torus; width: 50px;">${
+                        data.gameplay.combo.max
+                    }x</div>
+                    <div id="ourplayerAcc" style="font-size: 15px; font-family: Torus; width: 60px;">${data.gameplay.accuracy.toFixed(
+                        2
+                    )}%</div>
+                    ${$("#" + minimodsContainerOP.id).prop("outerHTML")}
                     </div>
                 `;
+            }, 1000);
 
-            }, 1000)
+            if (document.getElementById("ourplayer"))
+                if (playerPosition > 5) {
+                    leaderboard.style.transform = `translateY(${
+                        -(playerPosition - 6) * 75
+                    }px)`;
+                    document.getElementById(
+                        "ourplayer"
+                    ).style.transform = `none`;
+                } else {
+                    leaderboard.style.transform = "translateY(0)";
+                    document.getElementById(
+                        "ourplayer"
+                    ).style.transform = `translateY(-${
+                        (6 - playerPosition) * 75
+                    }px)`;
+                }
 
-            if (playerPosition > 5) {
-                leaderboard.style.transform = `translateY(${-(playerPosition - 6) * 75}px)`;
-                document.getElementById("ourplayer").style.transform = `none`;
-            }
-            else {
-                leaderboard.style.transform = 'translateY(0)';
-                document.getElementById("ourplayer").style.transform = `translateY(-${(6 - playerPosition) * 75}px)`
-            }
             if (tempSlotLength > 0)
                 for (var i = 1; i <= tempSlotLength; i++) {
                     if (i >= playerPosition && playerPosition !== 0) {
-                        document.getElementById(`slot${i}`).style.transform = `translateY(75px)`;
+                        document.getElementById(
+                            `slot${i}`
+                        ).style.transform = `translateY(75px)`;
                     }
                 }
 
@@ -625,34 +724,39 @@ socket.onmessage = event => {
                 bottom.style.transform = "translateY(300px)";
                 URIndex.style.transform = "translateY(-280px)";
             } else {
-                upperPart.style.transform = 'none';
-                bottom.style.transform = 'none';
+                upperPart.style.transform = "none";
+                bottom.style.transform = "none";
                 URIndex.style.transform = "none";
             }
         }
     }
 
     if (tempMapScores.length > 0)
-        if (tempScore >= tempMapScores[playerPosition - 2])
-            playerPosition--;
+        if (tempScore >= tempMapScores[playerPosition - 2]) playerPosition--;
 
     if (data.gameplay.hp.smooth > 0) {
-        hp.style.clipPath = `polygon(${(1 - data.gameplay.hp.smooth / 200) * 40 + 6.3}% 0%, ${(data.gameplay.hp.smooth / 200) * 40 + 53.7}% 0%, ${(data.gameplay.hp.smooth / 200) * 40 + 53.7}% 100%, ${(1 - data.gameplay.hp.smooth / 200) * 40 + 6.3}% 100%)`;
+        hp.style.clipPath = `polygon(${
+            (1 - data.gameplay.hp.smooth / 200) * 40 + 6.3
+        }% 0%, ${(data.gameplay.hp.smooth / 200) * 40 + 53.7}% 0%, ${
+            (data.gameplay.hp.smooth / 200) * 40 + 53.7
+        }% 100%, ${(1 - data.gameplay.hp.smooth / 200) * 40 + 6.3}% 100%)`;
     } else {
         hp.style.clipPath = `polygon(6.3% 0, 93.7% 0, 93.7% 100%, 6.3% 100%)`;
     }
-}
+};
 
 let config = {
-    type: 'line',
+    type: "line",
     data: {
         labels: [],
-        datasets: [{
-            borderColor: 'rgba(255, 255, 255, 0)',
-            backgroundColor: 'rgba(0, 0, 0, 0.7)',
-            data: [],
-            fill: true,
-        }]
+        datasets: [
+            {
+                borderColor: "rgba(255, 255, 255, 0)",
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                data: [],
+                fill: true,
+            },
+        ],
     },
     options: {
         tooltips: { enabled: false },
@@ -662,11 +766,11 @@ let config = {
         elements: {
             line: {
                 tension: 0.4,
-                cubicInterpolationMode: 'monotone'
+                cubicInterpolationMode: "monotone",
             },
             point: {
-                radius: 0
-            }
+                radius: 0,
+            },
         },
         responsive: false,
         scales: {
@@ -675,22 +779,24 @@ let config = {
             },
             y: {
                 display: false,
-            }
-        }
-    }
+            },
+        },
+    },
 };
 
 let configSecond = {
-    type: 'line',
+    type: "line",
     data: {
         labels: [],
-        datasets: [{
-            borderColor: 'rgba(0, 0, 0, 0)',
-            borderWidth: '2',
-            backgroundColor: 'rgba(255, 255, 255, 0.6)',
-            data: [],
-            fill: true,
-        }]
+        datasets: [
+            {
+                borderColor: "rgba(0, 0, 0, 0)",
+                borderWidth: "2",
+                backgroundColor: "rgba(255, 255, 255, 0.6)",
+                data: [],
+                fill: true,
+            },
+        ],
     },
     options: {
         tooltips: { enabled: false },
@@ -700,11 +806,11 @@ let configSecond = {
         elements: {
             line: {
                 tension: 0.4,
-                cubicInterpolationMode: 'monotone'
+                cubicInterpolationMode: "monotone",
             },
             point: {
-                radius: 0
-            }
+                radius: 0,
+            },
         },
         responsive: false,
         scales: {
@@ -713,50 +819,53 @@ let configSecond = {
             },
             y: {
                 display: false,
-            }
-        }
-    }
+            },
+        },
+    },
 };
 
 function brightnessCheck(element, rgb) {
-    let brightness = (0.21 * rgb.r) + (0.72 * rgb.g) + (0.07 * rgb.b);
+    let brightness = 0.21 * rgb.r + 0.72 * rgb.g + 0.07 * rgb.b;
     if (brightness > 190) {
-        element.style.color = '#161616';
-        element.style.textShadow = '0 2px 3px rgba(0, 0, 0, 0.5)';
+        element.style.color = "#161616";
+        element.style.textShadow = "0 2px 3px rgba(0, 0, 0, 0.5)";
     } else {
-        element.style.color = 'white';
-        element.style.textShadow = '0 2px 5px rgba(0, 0, 0, 0.6);'
+        element.style.color = "white";
+        element.style.textShadow = "0 2px 5px rgba(0, 0, 0, 0.6);";
     }
 }
 
 async function setupUser(name) {
     let data;
-    if (api != "")
-        data = await getUserDataSet(name);
-    else
-        data = null;
+    if (api != "") data = await getUserDataSet(name);
+    else data = null;
     //const avaImage = await getImage('8266808');
     if (data === null) {
         data = {
-            "user_id": "gamer",
-            "username": `${name}`,
-            "pp_rank": "0",
-            "pp_raw": "0",
-            "country": "__",
-            "pp_country_rank": "0",
-        }
+            user_id: "gamer",
+            username: `${name}`,
+            pp_rank: "0",
+            pp_raw: "0",
+            country: "__",
+            pp_country_rank: "0",
+        };
     }
     tempUID = data.user_id;
 
-    tempCountry = `${(data.country).split('').map(char => 127397 + char.charCodeAt())[0].toString(16)}-${(data.country).split('').map(char => 127397 + char.charCodeAt())[1].toString(16)}`;
+    tempCountry = `${data.country
+        .split("")
+        .map((char) => 127397 + char.charCodeAt())[0]
+        .toString(16)}-${data.country
+        .split("")
+        .map((char) => 127397 + char.charCodeAt())[1]
+        .toString(16)}`;
     tempRanks = data.pp_rank;
     tempcountryRank = data.pp_country_rank;
-    tempPlayerPP = data.pp_raw
+    tempPlayerPP = data.pp_raw;
 
     if (tempUID !== "gamer") {
         ava.style.backgroundImage = `url('https://a.ppy.sh/${tempUID}')`;
-    }
-    else {
+    } else {
         ava.style.backgroundImage = "url('./static/gamer.png')";
     }
 
@@ -775,9 +884,13 @@ async function setupUser(name) {
         tickRight.style.backgroundColor = `hsl(${avatarColor[1]})`;
         tickRight.style.boxShadow = `0 0 10px 3px hsl(${avatarColor[1]})`;
 
-        document.getElementById("comboBar").style.backgroundColor = `hsl(${avatarColor[0]})`;
+        document.getElementById(
+            "comboBar"
+        ).style.backgroundColor = `hsl(${avatarColor[0]})`;
         // document.getElementById("comboBar").style.filter = `drop-shadow(0 0 10px hsl(${avatarColor[0]}))`;
-        document.getElementById("ppBar").style.backgroundColor = `hsl(${avatarColor[1]})`;
+        document.getElementById(
+            "ppBar"
+        ).style.backgroundColor = `hsl(${avatarColor[1]})`;
         // document.getElementById("ppBar").style.boxShadow = `0 0 10px 3px hsl(${avatarColor[1]})`;
 
         // combo.style.borderColor = `hsl(${avatarColor[0]})`;
@@ -787,161 +900,256 @@ async function setupUser(name) {
     }
 }
 
-async function setupMapScores(beatmapID, name) {
-    const data = await getMapScores(beatmapID);
-    // console.log(data);
-
-    if (data) {
-        tempSlotLength = data.length;
-        playerPosition = data.length + 1;
+async function fetchWebBancho(md5, beatmapId) {
+    try {
+        const data = (
+            await axios.get("/osu-osz2-getscores.php", {
+                baseURL: "https://osu.ppy.sh/web",
+                headers: {
+                    "User-Agent": "osu!",
+                    Host: "osu.ppy.sh",
+                    "Accept-Encoding": "gzip, deflate",
+                },
+                params: {
+                    s: 0,
+                    vv: 4,
+                    v: 4,
+                    c: md5,
+                    m: 0,
+                    i: beatmapId,
+                    mods: 0,
+                    us: uname,
+                    ha: pwd,
+                },
+            })
+        )["data"];
+        return data.length !== 0 ? data[0] : null;
+    } catch (error) {
+        console.error(error);
     }
-    else {
-        tempSlotLength = 0;
-        playerPosition = 1;
-    }
+}
 
-    for (var i = tempSlotLength; i > 0; i--) {
-        tempMapScores[i - 1] = parseInt(data[i - 1].score);
+async function getMapScores2(beatmapID) {
+    const data = await getMapDataSet(beatmapID);
+    let md5, setId;
 
-        let tempModsLB = (parseInt(data[i - 1].enabled_mods) >>> 0).toString(2).padStart(15, '0');
-        let tempModsLiteral = "";
+    md5 = data.file_md5;
+    setId = data.beatmapset_id;
+    let rawData = await postNhayCam_1(md5, setId);
 
-        if (tempModsLB !== '000000000000000')
-            for (var j = 14; j >= 0; j--) {
-                if (tempModsLB[j] === '1') {
-                    switch (j) {
-                        case 0:
-                            tempModsLiteral += "PF";
-                            break;
-                        case 1:
-                            tempModsLiteral += "AP";
-                            break;
-                        case 2:
-                            tempModsLiteral += "SO";
-                            break;
-                        case 3:
-                            tempModsLiteral += "AT";
-                            break;
-                        case 4:
-                            tempModsLiteral += "FL";
-                            break;
-                        case 5:
-                            tempModsLiteral += "NC";
-                            break;
-                        case 6:
-                            tempModsLiteral += "HT";
-                            break;
-                        case 7:
-                            tempModsLiteral += "RX";
-                            break;
-                        case 8:
-                            tempModsLiteral += "DT";
-                            break;
-                        case 9:
-                            tempModsLiteral += "SD";
-                            break;
-                        case 10:
-                            tempModsLiteral += "HR";
-                            break;
-                        case 11:
-                            tempModsLiteral += "HD";
-                            break;
-                        case 12:
-                            tempModsLiteral += "TD";
-                            break;
-                        case 13:
-                            tempModsLiteral += "EZ";
-                            break;
-                        case 14:
-                            tempModsLiteral += "NF";
-                            break;
-                    }
-                }
-            }
-        else
-            tempModsLiteral = "NM";
-        // console.log(tempModsLiteral);
+    let obj = [];
 
-        let playerContainer = document.createElement("div");
-        playerContainer.id = `slot${i}`;
-        playerContainer.setAttribute("class", "playerContainer");
-        playerContainer.style.top = `${(i - 1) * 75}px`;
+    // If request is good...
+    let res = rawData.split("\n").slice(5);
+    res.splice(-1);
 
-        let playerAvatarLB = `<div id="lb_ava${i}" style="background-image: url('https://a.ppy.sh/${data[i - 1].user_id}')" class="leaderboardAvatar"></div>`;
+    res.forEach((e) => {
+        let arr = e.split("|");
+        obj.push({
+            score_id: arr[0],
+            score: arr[2],
+            username: arr[1],
+            count300: arr[6],
+            count100: arr[5],
+            count50: arr[4],
+            countmiss: arr[7],
+            maxcombo: arr[3],
+            countkatu: arr[8],
+            countgeki: arr[9],
+            perfect: arr[10],
+            enabled_mods: arr[11],
+            user_id: arr[12],
+        });
+    });
+    console.log(obj);
+    return obj;
+}
 
-        let playerNameLB = `<div id="lb_name${i}" style="width: 180px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${data[i - 1].username}</div>`;
+async function setupMapScores(beatmapID, name, countryToggle) {
+    if (leaderboardFetch === false) {
+        leaderboardFetch = true;
 
-        let playerScoreLB = `<div id="lb_score${i}" style="font-size: 15px; font-family: Torus; width: 100px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${new Intl.NumberFormat().format(Number(data[i - 1].score))}</div>`
+        let data;
 
-        let playerComboLB = `<div id="lb_combo${i}" style="font-size: 15px; font-family: Torus; width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${data[i - 1].maxcombo}x</div>`
+        if (countryToggle) data = await getMapScores2(beatmapID);
+        else data = await getMapScores(beatmapID);
 
-        let raw_playerAcc = accuracyCalc(parseInt(data[i - 1].count300), parseInt(data[i - 1].count100), parseInt(data[i - 1].count50), parseInt(data[i - 1].countmiss));
-        // console.log(raw_playerAcc);
-        let playerAccLB = `<div id="lb_acc${i}" style="font-size: 15px; font-family: Torus; width: 60px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${raw_playerAcc}%</div>`
-
-        let playerGradeLB;
-        let lb_grade = data[i - 1].rank;
-
-        switch (lb_grade) {
-            case ("XH"):
-                playerGradeLB = `<div id=grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">X</div>`;
-                break;
-            case ("X"):
-                playerGradeLB = `<div id="grade${i}" style="width: 50px; color: #de3950; filter: drop-shadow(0 0 5px #de3950)">X</div>`;
-                break;
-            case ("S"):
-                playerGradeLB = `<div id="grade${i}"  style="width: 50px; color: #f2d646; filter: drop-shadow(0 0 5px #f2d646)">S</div>`;
-                break;
-            case ("SH"):
-                playerGradeLB = `<div id="grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">S</div>`;
-                break;
-            case ("A"):
-                playerGradeLB = `<div id="grade${i}"  style="width: 50px; color: #46f26e; filter: drop-shadow(0 0 5px #46f26e)">A</div>`;
-                break;
-            case ("B"):
-                playerGradeLB = `<div id="grade${i}"  style="width: 50px; color: #469cf2; filter: drop-shadow(0 0 5px #469cf2)">B</div>`;
-                break;
-            case ("C"):
-                playerGradeLB = `<div id="grade${i}"  style="width: 50px; color: #9f46f2; filter: drop-shadow(0 0 5px #9f46f2)">C</div>`;
-                break;
-            case ("D"):
-                playerGradeLB = `<div id="grade${i}"  style="width: 50px; color: #ff0000; filter: drop-shadow(0 0 5px #ff0000)">D</div>`;
-                break;
+        if (data) {
+            tempSlotLength = data.length;
+            playerPosition = data.length + 1;
+        } else {
+            tempSlotLength = 0;
+            playerPosition = 1;
         }
 
-        // playerContainer.appendChild(playerNameLB);
-        // playerContainer.appendChild(playerGradeLB);
-        // playerContainer.appendChild(playerScoreLB);
-        // playerContainer.appendChild(playerComboLB);
-        // playerContainer.appendChild(playerAccLB);
+        for (var i = tempSlotLength; i > 0; i--) {
+            tempMapScores[i - 1] = parseInt(data[i - 1].score);
 
-        playerContainer.innerHTML = `${playerAvatarLB}
+            let tempModsLB = (parseInt(data[i - 1].enabled_mods) >>> 0)
+                .toString(2)
+                .padStart(15, "0");
+            let tempModsLiteral = "";
+
+            if (tempModsLB !== "000000000000000")
+                for (var j = 14; j >= 0; j--) {
+                    if (tempModsLB[j] === "1") {
+                        switch (j) {
+                            case 0:
+                                tempModsLiteral += "PF";
+                                break;
+                            case 1:
+                                tempModsLiteral += "AP";
+                                break;
+                            case 2:
+                                tempModsLiteral += "SO";
+                                break;
+                            case 3:
+                                tempModsLiteral += "AT";
+                                break;
+                            case 4:
+                                tempModsLiteral += "FL";
+                                break;
+                            case 5:
+                                tempModsLiteral += "NC";
+                                break;
+                            case 6:
+                                tempModsLiteral += "HT";
+                                break;
+                            case 7:
+                                tempModsLiteral += "RX";
+                                break;
+                            case 8:
+                                tempModsLiteral += "DT";
+                                break;
+                            case 9:
+                                tempModsLiteral += "SD";
+                                break;
+                            case 10:
+                                tempModsLiteral += "HR";
+                                break;
+                            case 11:
+                                tempModsLiteral += "HD";
+                                break;
+                            case 12:
+                                tempModsLiteral += "TD";
+                                break;
+                            case 13:
+                                tempModsLiteral += "EZ";
+                                break;
+                            case 14:
+                                tempModsLiteral += "NF";
+                                break;
+                        }
+                    }
+                }
+            else tempModsLiteral = "NM";
+            // console.log(tempModsLB)
+            // console.log(tempModsLiteral);
+
+            let playerContainer = document.createElement("div");
+            playerContainer.id = `slot${i}`;
+            playerContainer.setAttribute("class", "playerContainer");
+            playerContainer.style.top = `${(i - 1) * 75}px`;
+
+            let playerAvatarLB = `<div id="lb_ava${i}" style="background-image: url('https://a.ppy.sh/${
+                data[i - 1].user_id
+            }')" class="leaderboardAvatar"></div>`;
+
+            let playerNameLB = `<div id="lb_name${i}" style="width: 180px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${
+                data[i - 1].username
+            }</div>`;
+
+            let playerScoreLB = `<div id="lb_score${i}" style="font-size: 15px; font-family: Torus; width: 100px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${new Intl.NumberFormat().format(
+                Number(data[i - 1].score)
+            )}</div>`;
+
+            let playerComboLB = `<div id="lb_combo${i}" style="font-size: 15px; font-family: Torus; width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${
+                data[i - 1].maxcombo
+            }x</div>`;
+
+            let raw_playerAcc = accuracyCalc(
+                parseInt(data[i - 1].count300),
+                parseInt(data[i - 1].count100),
+                parseInt(data[i - 1].count50),
+                parseInt(data[i - 1].countmiss)
+            );
+            // console.log(raw_playerAcc);
+            let playerAccLB = `<div id="lb_acc${i}" style="font-size: 15px; font-family: Torus; width: 60px; color: #ffffff; filter: drop-shadow(0 0 5px rgba(0, 0, 0 ,0))">${raw_playerAcc}%</div>`;
+
+            let playerGradeLB;
+            let lb_grade = grader_text(
+                parseInt(data[i - 1].count300),
+                parseInt(data[i - 1].count100),
+                parseInt(data[i - 1].count50),
+                parseInt(data[i - 1].countmiss),
+                tempModsLiteral.includes("HD") || tempModsLiteral.includes("FL")
+            );
+
+            switch (lb_grade) {
+                case "XH":
+                    playerGradeLB = `<div id=grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">X</div>`;
+                    break;
+                case "X":
+                    playerGradeLB = `<div id="grade${i}" style="width: 50px; color: #de3950; filter: drop-shadow(0 0 5px #de3950)">X</div>`;
+                    break;
+                case "S":
+                    playerGradeLB = `<div id="grade${i}"  style="width: 50px; color: #f2d646; filter: drop-shadow(0 0 5px #f2d646)">S</div>`;
+                    break;
+                case "SH":
+                    playerGradeLB = `<div id="grade${i}"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">S</div>`;
+                    break;
+                case "A":
+                    playerGradeLB = `<div id="grade${i}"  style="width: 50px; color: #46f26e; filter: drop-shadow(0 0 5px #46f26e)">A</div>`;
+                    break;
+                case "B":
+                    playerGradeLB = `<div id="grade${i}"  style="width: 50px; color: #469cf2; filter: drop-shadow(0 0 5px #469cf2)">B</div>`;
+                    break;
+                case "C":
+                    playerGradeLB = `<div id="grade${i}"  style="width: 50px; color: #9f46f2; filter: drop-shadow(0 0 5px #9f46f2)">C</div>`;
+                    break;
+                case "D":
+                    playerGradeLB = `<div id="grade${i}"  style="width: 50px; color: #ff0000; filter: drop-shadow(0 0 5px #ff0000)">D</div>`;
+                    break;
+            }
+
+            // playerContainer.appendChild(playerNameLB);
+            // playerContainer.appendChild(playerGradeLB);
+            // playerContainer.appendChild(playerScoreLB);
+            // playerContainer.appendChild(playerComboLB);
+            // playerContainer.appendChild(playerAccLB);
+
+            playerContainer.innerHTML = `${playerAvatarLB}
             <div class="playerStatsContainer">${playerNameLB}
             ${playerGradeLB}
             ${playerScoreLB}
             ${playerComboLB}
             ${playerAccLB}<div>
-        `
+        `;
 
+            let minimodsContainer = document.createElement("div");
+            minimodsContainer.id = `minimodsContainerSlot${i}`;
+            minimodsContainer.setAttribute("class", "minimodsContainer");
+            playerContainer.appendChild(minimodsContainer);
+            document.getElementById("leaderboard").appendChild(playerContainer);
 
-        let minimodsContainer = document.createElement("div");
-        minimodsContainer.id = `minimodsContainerSlot${i}`;
-        minimodsContainer.setAttribute("class", "minimodsContainer");
-        playerContainer.appendChild(minimodsContainer);
-        document.getElementById("leaderboard").appendChild(playerContainer);
+            // let tempMinimods = data.gameplay.leaderboard.slots[i - 1].mods;
 
-        // let tempMinimods = data.gameplay.leaderboard.slots[i - 1].mods;
+            let minimodsCount = tempModsLiteral.length;
 
-        let minimodsCount = tempModsLiteral.length;
-
-        for (var k = 0; k < minimodsCount; k++) {
-            let mods = document.createElement("div");
-            mods.id = tempModsLiteral.substr(k, 2) + i;
-            mods.setAttribute("class", "minimods");
-            mods.style.backgroundImage = `url('./static/minimods/${tempModsLiteral.substr(k, 2)}.png')`;
-            mods.style.transform = `translateX(${k / 2 * 10}px)`;
-            document.getElementById(`minimodsContainerSlot${i}`).appendChild(mods);
-            k++;
+            for (var k = 0; k < minimodsCount; k++) {
+                let mods = document.createElement("div");
+                mods.id = tempModsLiteral.substr(k, 2) + i;
+                mods.setAttribute("class", "minimods");
+                mods.style.backgroundImage = `url('./static/minimods/${tempModsLiteral.substr(
+                    k,
+                    2
+                )}.png')`;
+                mods.style.transform = `translateX(${(k / 2) * 10}px)`;
+                document
+                    .getElementById(`minimodsContainerSlot${i}`)
+                    .appendChild(mods);
+                k++;
+            }
         }
     }
 }
@@ -961,7 +1169,7 @@ async function getUserDataSet(name) {
     } catch (error) {
         console.error(error);
     }
-};
+}
 
 async function getUserTop(name) {
     try {
@@ -971,7 +1179,7 @@ async function getUserTop(name) {
                 params: {
                     k: api,
                     u: name,
-                    limit: 5
+                    limit: 5,
                 },
             })
         )["data"];
@@ -979,7 +1187,7 @@ async function getUserTop(name) {
     } catch (error) {
         console.error(error);
     }
-};
+}
 
 async function getMapDataSet(beatmapID) {
     try {
@@ -996,7 +1204,7 @@ async function getMapDataSet(beatmapID) {
     } catch (error) {
         console.error(error);
     }
-};
+}
 
 async function getMapScores(beatmapID) {
     try {
@@ -1013,16 +1221,44 @@ async function getMapScores(beatmapID) {
     } catch (error) {
         console.error(error);
     }
-};
+}
+
+async function postNhayCam_1(md5, beatmapset_id) {
+    try {
+        let rawData = null;
+        const data = await axios
+            .post("http://tryz.mung.gay/getCountryRanking", {
+                md5: md5,
+                beatmapset_id: beatmapset_id,
+                uname: uname,
+                pwd: pwd,
+            })
+            .then((response) => {
+                // rawData = response.data.data;
+                rawData = response.data;
+            });
+        return rawData;
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 async function postUserID(id) {
     try {
         let imageData = null;
-        const dataImageAsBase64 = await axios.post('http://bangdream-wave-rsx-airblade-sh.herokuapp.com', { user_id: id }, {
-            headers: {
-                'content-type': 'application/json',
-            }
-        }).then(response => { imageData = response.data.data });
+        const dataImageAsBase64 = await axios
+            .post(
+                "http://tryz.mung.gay",
+                { user_id: id },
+                {
+                    headers: {
+                        "content-type": "application/json",
+                    },
+                }
+            )
+            .then((response) => {
+                imageData = response.data.data;
+            });
         return imageData;
     } catch (error) {
         console.error(error);
@@ -1030,40 +1266,79 @@ async function postUserID(id) {
 }
 
 accuracyCalc = (h300, h100, h50, h0) => {
-    let accuracy = (h300 + h100 / 3 + h50 / 6) / (h300 + h100 + h50 + h0) * 100;
+    let accuracy =
+        ((h300 + h100 / 3 + h50 / 6) / (h300 + h100 + h50 + h0)) * 100;
     return accuracy.toFixed(2);
-}
+};
 
 grader = (h300, h100, h50, h0, isHD) => {
     // console.log(isHD);
     let acc = accuracyCalc(h300, h100, h50, h0);
     let maxCombo = h300 + h100 + h50 + h0;
     switch (true) {
-        case (acc == 100 || maxCombo === 0):
+        case acc == 100 || maxCombo === 0:
             if (isHD === -1) {
                 return `<div id="gradeOurplayer" style="width: 50px; color: #de3950; filter: drop-shadow(0 0 5px #de3950)">X</div>`;
                 break;
             }
             return `<div id="gradeOurplayer"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">X</div>`;
             break;
-        case (acc > 90 && h50 / maxCombo < 0.01 && h0 === 0):
+        case acc > 90 && h50 / maxCombo < 0.01 && h0 === 0:
             if (isHD === -1) {
                 return `<div id="gradeOurplayer"  style="width: 50px; color: #f2d646; filter: drop-shadow(0 0 5px #f2d646)">S</div>`;
                 break;
             }
             return `<div id="gradeOurplayer"  style="width: 50px; color: #ffffff; filter: drop-shadow(0 0 5px #ffffff)">S</div>`;
             break;
-        case ((acc > 80 && acc <= 90 && h0 === 0) || (h300 / maxCombo > 0.9)):
+        case (acc > 80 && acc <= 90 && h0 === 0) || h300 / maxCombo > 0.9:
             return `<div id="gradeOurplayer"  style="width: 50px; color: #46f26e; filter: drop-shadow(0 0 5px #46f26e)">A</div>`;
             break;
-        case ((acc > 70 && acc <= 80 && h0 === 0) || (h300 / maxCombo > 0.8)):
+        case (acc > 70 && acc <= 80 && h0 === 0) || h300 / maxCombo > 0.8:
             return `<div id="gradeOurplayer"  style="width: 50px; color: #469cf2; filter: drop-shadow(0 0 5px #469cf2)">B</div>`;
             break;
-        case ((h300 / maxCombo > 0.6) && (h300 / maxCombo <= 0.8)):
+        case h300 / maxCombo > 0.6 && h300 / maxCombo <= 0.8:
             return `<div id="gradeOurplayer"  style="width: 50px; color: #9f46f2; filter: drop-shadow(0 0 5px #9f46f2)">C</div>`;
             break;
-        case ((h300 / maxCombo <= 0.6)):
+        case h300 / maxCombo <= 0.6:
             return `<div id="gradeOurplayer"  style="width: 50px; color: #ff0000; filter: drop-shadow(0 0 5px #ff0000)">D</div>`;
             break;
     }
-}
+};
+
+grader_text = (h300, h100, h50, h0, isHD) => {
+    // console.log(isHD);
+    let acc = accuracyCalc(h300, h100, h50, h0);
+    let maxCombo = h300 + h100 + h50 + h0;
+    switch (true) {
+        case acc == 100 || maxCombo === 0:
+            if (isHD === -1) {
+                return `X`;
+                break;
+            }
+            return `XH`;
+            break;
+        case acc > 90 && h50 / maxCombo < 0.01 && h0 === 0:
+            if (isHD === -1) {
+                return `S`;
+                break;
+            }
+            return `SH`;
+            break;
+        case (acc > 80 && acc <= 90 && h0 === 0) || h300 / maxCombo > 0.9:
+            return `A`;
+            break;
+        case (acc > 70 && acc <= 80 && h0 === 0) || h300 / maxCombo > 0.8:
+            return `B`;
+            break;
+        case h300 / maxCombo > 0.6 && h300 / maxCombo <= 0.8:
+            return `C`;
+            break;
+        case h300 / maxCombo <= 0.6:
+            return `D`;
+            break;
+    }
+};
+
+setLeaderboardTrue = () => {
+    leaderboardFetch = true;
+};

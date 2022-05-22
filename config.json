@@ -4,5 +4,10 @@
 		"leaderboardEnable": "1",
 		"leaderboardTab": "0"
 	},
-	{ "recorder": "" }
+	{ "recorder": "" },
+	{
+		"username": "",
+		"password": "",
+		"countryToggle": 1
+	}
 ]
