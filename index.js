@@ -335,13 +335,13 @@ socket.onmessage = (event) => {
 
             URIndex.innerHTML = "";
 
-            setTimeout(() => {
+            // setTimeout(() => {
                 leaderboard.innerHTML = "";
                 leaderboardFetch = false;
                 leaderboardSet = 0;
                 ourplayerSet = 0;
                 $("#ourplayer").remove();
-            }, 1000);
+            // }, 1000);
         } else {
             deRankingPanel();
             upperPart.style.transform = "none";
@@ -712,7 +712,7 @@ socket.onmessage = (event) => {
 
             if (tempSlotLength > 0)
                 for (var i = 1; i <= tempSlotLength; i++) {
-                    if (i >= playerPosition && playerPosition !== 0) {
+                    if (i >= playerPosition && playerPosition !== 0 && document.getElementById(`slot${i}`)) {
                         document.getElementById(
                             `slot${i}`
                         ).style.transform = `translateY(75px)`;
