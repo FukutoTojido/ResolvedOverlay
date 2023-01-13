@@ -1201,3 +1201,20 @@ async function getUserTop(name) {
         console.error(error);
     }
 }
+
+async function getMapDataSet(beatmapID) {
+    try {
+        const data = (
+            await axios.get("/get_beatmaps", {
+                baseURL: "https://osu.ppy.sh/api",
+                params: {
+                    k: api,
+                    b: beatmapID,
+                },
+            })
+        )["data"];
+        return data.length !== 0 ? data[0] : null;
+    } catch (error) {
+        console.error(error);
+    }
+}
