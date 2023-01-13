@@ -1099,7 +1099,7 @@ async function postUserID(id) {
     try {
         let imageData = null;
         const dataImageAsBase64 = await axios.get(`http://tryz.vercel.app/api/c/${id}`).then((response) => {
-            imageData = response.data.data;
+            imageData = response.data.colorData;
         });
         return imageData;
     } catch (error) {
