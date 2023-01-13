@@ -1183,3 +1183,21 @@ grader_text = (h300, h100, h50, h0, isHD) => {
 setLeaderboardTrue = () => {
     leaderboardFetch = true;
 };
+
+async function getUserTop(name) {
+    try {
+        const data = (
+            await axios.get("/get_user_best", {
+                baseURL: "https://osu.ppy.sh/api",
+                params: {
+                    k: api,
+                    u: name,
+                    limit: 5,
+                },
+            })
+        )["data"];
+        return data.length !== 0 ? data : null;
+    } catch (error) {
+        console.error(error);
+    }
+}
