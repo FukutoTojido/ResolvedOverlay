@@ -1,13 +1,11 @@
 [
-	{ "api": "da06327d3d13ccd56970dc52984ab893d556a7a3" },
+	{ "api": "" },
 	{
 		"leaderboardEnable": "1",
 		"leaderboardTab": "0"
 	},
 	{ "recorder": "Try-Z" },
 	{
-		"username": "[Boy]DaLat",
-		"password": "823b70176613bf0b85c6397a6ac15552",
 		"countryToggle": 1
 	}
 ]

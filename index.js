@@ -15,11 +15,7 @@ async function getAPI() {
         leaderboardEnable = file[1].leaderboardEnable;
         leaderboardTab = file[1].leaderboardTab;
         document.getElementById("recorderName").innerHTML = file[2].recorder;
-        document.getElementById(
-            "resultRecorder"
-        ).innerHTML = `Recorder: ${file[2].recorder}`;
-        uname = file[3].username;
-        pwd = file[3].password;
+        document.getElementById("resultRecorder").innerHTML = `Recorder: ${file[2].recorder}`;
         countryToggle = file[3].countryToggle;
     } catch (error) {
         console.error("Could not read JSON file", error);
@@ -184,13 +180,7 @@ socket.onerror = (error) => {
     console.log("Socket Error: ", error);
 };
 
-let tempMapID,
-    tempImg,
-    tempMapArtist,
-    tempMapTitle,
-    tempMapDiff,
-    tempMapper,
-    tempRankedStatus;
+let tempMapID, tempImg, tempMapArtist, tempMapTitle, tempMapDiff, tempMapper, tempRankedStatus;
 
 let tempSR, tempCS, tempAR, tempOD, tempHPDr;
 
@@ -293,14 +283,8 @@ socket.onmessage = (event) => {
 
     if (tempImg !== data.menu.bm.path.full) {
         tempImg = data.menu.bm.path.full;
-        data.menu.bm.path.full = data.menu.bm.path.full
-            .replace(/#/g, "%23")
-            .replace(/%/g, "%25")
-            .replace(/\\/g, "/")
-            .replace(/'/g, "%27");
-        mapContainer.style.backgroundImage = `url('http://127.0.0.1:24050/Songs/${
-            data.menu.bm.path.full
-        }?a=${Math.random(10000)}')`;
+        data.menu.bm.path.full = data.menu.bm.path.full.replace(/#/g, "%23").replace(/%/g, "%25").replace(/\\/g, "/").replace(/'/g, "%27");
+        mapContainer.style.backgroundImage = `url('http://127.0.0.1:24050/Songs/${data.menu.bm.path.full}?a=${Math.random(10000)}')`;
         mapBG.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('http://127.0.0.1:24050/Songs/${
             data.menu.bm.path.full
         }?a=${Math.random(10000)}')`;
@@ -327,20 +311,18 @@ socket.onmessage = (event) => {
             bottom.style.transform = "translateY(300px)";
             URIndex.style.transform = "none";
 
-            document.getElementById("modContainer").style.transform =
-                "translateX(500px)";
+            document.getElementById("modContainer").style.transform = "translateX(500px)";
 
-            document.getElementById("leaderboardx").style.transform =
-                "translateX(-400px)";
+            document.getElementById("leaderboardx").style.transform = "translateX(-400px)";
 
             URIndex.innerHTML = "";
 
             // setTimeout(() => {
-                leaderboard.innerHTML = "";
-                leaderboardFetch = false;
-                leaderboardSet = 0;
-                ourplayerSet = 0;
-                $("#ourplayer").remove();
+            leaderboard.innerHTML = "";
+            leaderboardFetch = false;
+            leaderboardSet = 0;
+            ourplayerSet = 0;
+            $("#ourplayer").remove();
             // }, 1000);
         } else {
             deRankingPanel();
@@ -418,8 +400,7 @@ socket.onmessage = (event) => {
 
     if (tempStrainBase !== JSON.stringify(data.menu.pp.strains)) {
         tempLink = JSON.stringify(data.menu.pp.strains);
-        if (data.menu.pp.strains)
-            smoothed = smooth(data.menu.pp.strains, smoothOffset);
+        if (data.menu.pp.strains) smoothed = smooth(data.menu.pp.strains, smoothOffset);
         config.data.datasets[0].data = smoothed;
         config.data.datasets[0].backgroundColor = `rgba(${colorGet.r}, ${colorGet.g}, ${colorGet.b}, 0.2)`;
         config.data.labels = smoothed;
@@ -431,11 +412,7 @@ socket.onmessage = (event) => {
             window.myLineSecond.update();
         }
     }
-    if (
-        seek !== data.menu.bm.time.current &&
-        fullTime !== undefined &&
-        fullTime !== 0
-    ) {
+    if (seek !== data.menu.bm.time.current && fullTime !== undefined && fullTime !== 0) {
         seek = data.menu.bm.time.current;
         progressChart.style.width = onepart * seek + "px";
     }
@@ -450,17 +427,11 @@ socket.onmessage = (event) => {
         let modsCount = tempMods.length;
 
         for (var i = 0; i < modsCount; i++) {
-            if (
-                tempMods.substr(i, 2) !== "NM" ||
-                tempMods.substr(i, 2) !== "TD"
-            ) {
+            if (tempMods.substr(i, 2) !== "NM" || tempMods.substr(i, 2) !== "TD") {
                 let mods = document.createElement("div");
                 mods.id = tempMods.substr(i, 2);
                 mods.setAttribute("class", "mods");
-                mods.style.backgroundImage = `url('./static/mods/${tempMods.substr(
-                    i,
-                    2
-                )}.png')`;
+                mods.style.backgroundImage = `url('./static/mods/${tempMods.substr(i, 2)}.png')`;
                 mods.style.transform = `translateX(${(i / 2) * 30}px)`;
                 document.getElementById("modContainer").appendChild(mods);
             }
@@ -468,10 +439,7 @@ socket.onmessage = (event) => {
         }
 
         if (OD !== data.menu.bm.stats.OD) {
-            if (
-                data.menu.mods.str.indexOf("DT") == -1 ||
-                data.menu.mods.str.indexOf("NC") == -1
-            ) {
+            if (data.menu.mods.str.indexOf("DT") == -1 || data.menu.mods.str.indexOf("NC") == -1) {
                 OD = data.menu.bm.stats.OD;
             } else {
                 OD = (500 / 333) * data.menu.bm.stats.OD + -2210 / 333;
@@ -501,21 +469,12 @@ socket.onmessage = (event) => {
                 tempAvg = tempAvg * 0.9 + tempSmooth[a] * 0.1;
             }
             fullPos = -10 * OD + 199.5;
-            tickPos =
-                (data.gameplay.hits.hitErrorArray[tempHitErrorArrayLength - 1] /
-                    fullPos) *
-                145;
-            avgHitError.style.transform = `translateX(${
-                (tempAvg / fullPos) * 150
-            }px)`;
+            tickPos = (data.gameplay.hits.hitErrorArray[tempHitErrorArrayLength - 1] / fullPos) * 145;
+            avgHitError.style.transform = `translateX(${(tempAvg / fullPos) * 150}px)`;
             l100.style.width = `${((-8 * OD + 139.5) / fullPos) * 300}px`;
-            l100.style.transform = `translateX(${
-                (209.8 - ((-8 * OD + 139.5) / fullPos) * 300) / 2
-            }px)`;
+            l100.style.transform = `translateX(${(209.8 - ((-8 * OD + 139.5) / fullPos) * 300) / 2}px)`;
             l300.style.width = `${((-6 * OD + 79.5) / fullPos) * 300}px`;
-            l300.style.transform = `translateX(${
-                (119.5 - ((-6 * OD + 79.5) / fullPos) * 300) / 2
-            }px)`;
+            l300.style.transform = `translateX(${(119.5 - ((-6 * OD + 79.5) / fullPos) * 300) / 2}px)`;
             let tick = document.createElement("div");
             tick.id = `tick${tempHitErrorArrayLength}`;
             tick.setAttribute("class", "tick");
@@ -572,47 +531,30 @@ socket.onmessage = (event) => {
         tempTimeMP3 = data.menu.bm.time.mp3;
         interfaceID = data.settings.showInterface;
 
-        if (
-            tempTimeCurrent >= tempFirstObj + 5000 &&
-            tempTimeCurrent <= tempFirstObj + 11900 &&
-            gameState == 2
-        ) {
+        if (tempTimeCurrent >= tempFirstObj + 5000 && tempTimeCurrent <= tempFirstObj + 11900 && gameState == 2) {
             recorder.style.transform = "translateX(600px)";
-            if (tempTimeCurrent >= tempFirstObj + 5500)
-                recorderName.style.transform = "translateX(600px)";
+            if (tempTimeCurrent >= tempFirstObj + 5500) recorderName.style.transform = "translateX(600px)";
         } else {
             recorder.style.transform = "none";
             recorderName.style.transform = "none";
         }
 
-        if (
-            tempTimeCurrent >= tempTimeFull - 10000 &&
-            gameState === 2 &&
-            !apiGetSet
-        )
-            fetchData();
+        if (tempTimeCurrent >= tempTimeFull - 10000 && gameState === 2 && !apiGetSet) fetchData();
 
-        if (tempTimeCurrent >= tempTimeMP3 - 2000 && gameState === 2)
-            rankingPanelBG.style.opacity = 1;
+        if (tempTimeCurrent >= tempTimeMP3 - 2000 && gameState === 2) rankingPanelBG.style.opacity = 1;
 
         if (gameState === 7) {
             if (!rankingPanelSet) setupRankingPanel();
             if (tempGrade !== "")
-                if (!isHidden)
-                    rankingResult.style.backgroundImage = `url('./static/rankings/${tempGrade}.png')`;
-                else if (tempGrade === "S" || tempGrade === "SS")
-                    rankingResult.style.backgroundImage = `url('./static/rankings/${tempGrade}H.png')`;
-                else
-                    rankingResult.style.backgroundImage = `url('./static/rankings/${tempGrade}.png')`;
-        } else if (!(tempTimeCurrent >= tempTimeFull - 500 && gameState === 2))
-            rankingPanelBG.style.opacity = 0;
+                if (!isHidden) rankingResult.style.backgroundImage = `url('./static/rankings/${tempGrade}.png')`;
+                else if (tempGrade === "S" || tempGrade === "SS") rankingResult.style.backgroundImage = `url('./static/rankings/${tempGrade}H.png')`;
+                else rankingResult.style.backgroundImage = `url('./static/rankings/${tempGrade}.png')`;
+        } else if (!(tempTimeCurrent >= tempTimeFull - 500 && gameState === 2)) rankingPanelBG.style.opacity = 0;
 
         if (gameState == 2) {
             upperPart.style.transform = "none";
 
-            if (leaderboardTab === "1")
-                document.getElementById("leaderboardx").style.opacity =
-                    data.gameplay.leaderboard.isVisible === true ? 0 : 1;
+            if (leaderboardTab === "1") document.getElementById("leaderboardx").style.opacity = data.gameplay.leaderboard.isVisible === true ? 0 : 1;
 
             setupMapScores(tempMapID, tempUsername, countryToggle);
 
@@ -627,24 +569,14 @@ socket.onmessage = (event) => {
                     ourplayerSet = 1;
                     ourplayerContainer = document.createElement("div");
                     ourplayerContainer.id = "ourplayer";
-                    ourplayerContainer.setAttribute(
-                        "class",
-                        "ourplayerContainer"
-                    );
+                    ourplayerContainer.setAttribute("class", "ourplayerContainer");
 
                     minimodsContainerOP = document.createElement("div");
                     minimodsContainerOP.id = `minimodsContainerOurPlayer`;
-                    minimodsContainerOP.setAttribute(
-                        "class",
-                        "minimodsContainer"
-                    );
+                    minimodsContainerOP.setAttribute("class", "minimodsContainer");
 
-                    document
-                        .getElementById("leaderboardx")
-                        .appendChild(ourplayerContainer);
-                    document
-                        .getElementById("ourplayer")
-                        .appendChild(minimodsContainerOP);
+                    document.getElementById("leaderboardx").appendChild(ourplayerContainer);
+                    document.getElementById("ourplayer").appendChild(minimodsContainerOP);
 
                     tempMinimodsOP = tempMods;
 
@@ -654,14 +586,9 @@ socket.onmessage = (event) => {
                         let mods = document.createElement("div");
                         mods.id = tempMinimodsOP.substr(k, 2) + "OurPlayer";
                         mods.setAttribute("class", "minimods");
-                        mods.style.backgroundImage = `url('./static/minimods/${tempMinimodsOP.substr(
-                            k,
-                            2
-                        )}.png')`;
+                        mods.style.backgroundImage = `url('./static/minimods/${tempMinimodsOP.substr(k, 2)}.png')`;
                         mods.style.transform = `translateX(${(k / 2) * 10}px)`;
-                        document
-                            .getElementById(`minimodsContainerOurPlayer`)
-                            .appendChild(mods);
+                        document.getElementById(`minimodsContainerOurPlayer`).appendChild(mods);
                         k++;
                     }
                 }
@@ -682,12 +609,8 @@ socket.onmessage = (event) => {
                     <div id="ourplayerScore" style="font-size: 15px; font-family: Torus; width: 100px;">${new Intl.NumberFormat().format(
                         Number(data.gameplay.score)
                     )}</div>
-                    <div id="ourplayerCombo" style="font-size: 15px; font-family: Torus; width: 50px;">${
-                        data.gameplay.combo.max
-                    }x</div>
-                    <div id="ourplayerAcc" style="font-size: 15px; font-family: Torus; width: 60px;">${data.gameplay.accuracy.toFixed(
-                        2
-                    )}%</div>
+                    <div id="ourplayerCombo" style="font-size: 15px; font-family: Torus; width: 50px;">${data.gameplay.combo.max}x</div>
+                    <div id="ourplayerAcc" style="font-size: 15px; font-family: Torus; width: 60px;">${data.gameplay.accuracy.toFixed(2)}%</div>
                     ${$("#" + minimodsContainerOP.id).prop("outerHTML")}
                     </div>
                 `;
@@ -695,27 +618,17 @@ socket.onmessage = (event) => {
 
             if (document.getElementById("ourplayer"))
                 if (playerPosition > 5) {
-                    leaderboard.style.transform = `translateY(${
-                        -(playerPosition - 6) * 75
-                    }px)`;
-                    document.getElementById(
-                        "ourplayer"
-                    ).style.transform = `none`;
+                    leaderboard.style.transform = `translateY(${-(playerPosition - 6) * 75}px)`;
+                    document.getElementById("ourplayer").style.transform = `none`;
                 } else {
                     leaderboard.style.transform = "translateY(0)";
-                    document.getElementById(
-                        "ourplayer"
-                    ).style.transform = `translateY(-${
-                        (6 - playerPosition) * 75
-                    }px)`;
+                    document.getElementById("ourplayer").style.transform = `translateY(-${(6 - playerPosition) * 75}px)`;
                 }
 
             if (tempSlotLength > 0)
                 for (var i = 1; i <= tempSlotLength; i++) {
                     if (i >= playerPosition && playerPosition !== 0 && document.getElementById(`slot${i}`)) {
-                        document.getElementById(
-                            `slot${i}`
-                        ).style.transform = `translateY(75px)`;
+                        document.getElementById(`slot${i}`).style.transform = `translateY(75px)`;
                     }
                 }
 
@@ -731,13 +644,10 @@ socket.onmessage = (event) => {
         }
     }
 
-    if (tempMapScores.length > 0)
-        if (tempScore >= tempMapScores[playerPosition - 2]) playerPosition--;
+    if (tempMapScores.length > 0) if (tempScore >= tempMapScores[playerPosition - 2]) playerPosition--;
 
     if (data.gameplay.hp.smooth > 0) {
-        hp.style.clipPath = `polygon(${
-            (1 - data.gameplay.hp.smooth / 200) * 40 + 6.3
-        }% 0%, ${(data.gameplay.hp.smooth / 200) * 40 + 53.7}% 0%, ${
+        hp.style.clipPath = `polygon(${(1 - data.gameplay.hp.smooth / 200) * 40 + 6.3}% 0%, ${(data.gameplay.hp.smooth / 200) * 40 + 53.7}% 0%, ${
             (data.gameplay.hp.smooth / 200) * 40 + 53.7
         }% 100%, ${(1 - data.gameplay.hp.smooth / 200) * 40 + 6.3}% 100%)`;
     } else {
@@ -884,13 +794,9 @@ async function setupUser(name) {
         tickRight.style.backgroundColor = `hsl(${avatarColor[1]})`;
         tickRight.style.boxShadow = `0 0 10px 3px hsl(${avatarColor[1]})`;
 
-        document.getElementById(
-            "comboBar"
-        ).style.backgroundColor = `hsl(${avatarColor[0]})`;
+        document.getElementById("comboBar").style.backgroundColor = `hsl(${avatarColor[0]})`;
         // document.getElementById("comboBar").style.filter = `drop-shadow(0 0 10px hsl(${avatarColor[0]}))`;
-        document.getElementById(
-            "ppBar"
-        ).style.backgroundColor = `hsl(${avatarColor[1]})`;
+        document.getElementById("ppBar").style.backgroundColor = `hsl(${avatarColor[1]})`;
         // document.getElementById("ppBar").style.boxShadow = `0 0 10px 3px hsl(${avatarColor[1]})`;
 
         // combo.style.borderColor = `hsl(${avatarColor[0]})`;
@@ -930,12 +836,7 @@ async function fetchWebBancho(md5, beatmapId) {
 }
 
 async function getMapScores2(beatmapID) {
-    const data = await getMapDataSet(beatmapID);
-    let md5, setId;
-
-    md5 = data.file_md5;
-    setId = data.beatmapset_id;
-    let rawData = await postNhayCam_1(md5, setId);
+    let rawData = await postNhayCam_1(beatmapID);
 
     let obj = [];
 
@@ -985,9 +886,7 @@ async function setupMapScores(beatmapID, name, countryToggle) {
         for (var i = tempSlotLength; i > 0; i--) {
             tempMapScores[i - 1] = parseInt(data[i - 1].score);
 
-            let tempModsLB = (parseInt(data[i - 1].enabled_mods) >>> 0)
-                .toString(2)
-                .padStart(15, "0");
+            let tempModsLB = (parseInt(data[i - 1].enabled_mods) >>> 0).toString(2).padStart(15, "0");
             let tempModsLiteral = "";
 
             if (tempModsLB !== "000000000000000")
@@ -1140,14 +1039,9 @@ async function setupMapScores(beatmapID, name, countryToggle) {
                 let mods = document.createElement("div");
                 mods.id = tempModsLiteral.substr(k, 2) + i;
                 mods.setAttribute("class", "minimods");
-                mods.style.backgroundImage = `url('./static/minimods/${tempModsLiteral.substr(
-                    k,
-                    2
-                )}.png')`;
+                mods.style.backgroundImage = `url('./static/minimods/${tempModsLiteral.substr(k, 2)}.png')`;
                 mods.style.transform = `translateX(${(k / 2) * 10}px)`;
-                document
-                    .getElementById(`minimodsContainerSlot${i}`)
-                    .appendChild(mods);
+                document.getElementById(`minimodsContainerSlot${i}`).appendChild(mods);
                 k++;
             }
         }
@@ -1162,41 +1056,6 @@ async function getUserDataSet(name) {
                 params: {
                     k: api,
                     u: name,
-                },
-            })
-        )["data"];
-        return data.length !== 0 ? data[0] : null;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-async function getUserTop(name) {
-    try {
-        const data = (
-            await axios.get("/get_user_best", {
-                baseURL: "https://osu.ppy.sh/api",
-                params: {
-                    k: api,
-                    u: name,
-                    limit: 5,
-                },
-            })
-        )["data"];
-        return data.length !== 0 ? data : null;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-async function getMapDataSet(beatmapID) {
-    try {
-        const data = (
-            await axios.get("/get_beatmaps", {
-                baseURL: "https://osu.ppy.sh/api",
-                params: {
-                    k: api,
-                    b: beatmapID,
                 },
             })
         )["data"];
@@ -1223,20 +1082,13 @@ async function getMapScores(beatmapID) {
     }
 }
 
-async function postNhayCam_1(md5, beatmapset_id) {
+async function postNhayCam_1(beatmap_id) {
     try {
         let rawData = null;
-        const data = await axios
-            .post("http://tryz.mung.gay/getCountryRanking", {
-                md5: md5,
-                beatmapset_id: beatmapset_id,
-                uname: uname,
-                pwd: pwd,
-            })
-            .then((response) => {
-                // rawData = response.data.data;
-                rawData = response.data;
-            });
+        const data = await axios.get(`https://tryz.vercel.app/api/countryRanking/${beatmap_id}`).then((response) => {
+            // rawData = response.data.data;
+            rawData = response.data;
+        });
         return rawData;
     } catch (error) {
         console.error(error);
@@ -1246,19 +1098,9 @@ async function postNhayCam_1(md5, beatmapset_id) {
 async function postUserID(id) {
     try {
         let imageData = null;
-        const dataImageAsBase64 = await axios
-            .post(
-                "http://tryz.mung.gay",
-                { user_id: id },
-                {
-                    headers: {
-                        "content-type": "application/json",
-                    },
-                }
-            )
-            .then((response) => {
-                imageData = response.data.data;
-            });
+        const dataImageAsBase64 = await axios.get(`http://tryz.vercel.app/api/c/${id}`).then((response) => {
+            imageData = response.data.data;
+        });
         return imageData;
     } catch (error) {
         console.error(error);
@@ -1266,8 +1108,7 @@ async function postUserID(id) {
 }
 
 accuracyCalc = (h300, h100, h50, h0) => {
-    let accuracy =
-        ((h300 + h100 / 3 + h50 / 6) / (h300 + h100 + h50 + h0)) * 100;
+    let accuracy = ((h300 + h100 / 3 + h50 / 6) / (h300 + h100 + h50 + h0)) * 100;
     return accuracy.toFixed(2);
 };
 
